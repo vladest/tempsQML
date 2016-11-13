@@ -1,73 +1,73 @@
 import QtQuick 2.6
+import QtGraphicalEffects 1.0
 
 Column {
-    width: indicators.itemHeight*2
+    width: 50
     spacing: 0
     Text {
-        height: indicators.itemHeight
         width: parent.width
-        textFormat: Text.RichText
-        text: Qt.formatDateTime(timestamp, "H") + "<sup>" + Qt.formatDateTime(timestamp, "mm") + "</<sup>"
+        color: "#999999"
+        font.pixelSize: 10
+        text: Qt.formatDateTime(timestamp, "ddd")
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
 
-    Image {
-        height: indicators.itemHeight
-        width: height
+    ColoredImage {
         anchors.horizontalCenter: parent.horizontalCenter
-        source: "/Images/weatherIcons/" + weather_codition_icon_id + ".png"
+        height: 59
+        width: 59
+        source: "images/icons/" + weather_codition_icon_id + ".svg"
+        overlayColor: WeatherModel.backgroundColor
     }
+
     Text {
-        height: indicators.itemHeight
         width: parent.width
-        text: weatherModel.kelvin2celsius(temp).toFixed(0) + "\u00B0"
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-    }
-    Text {
-        height: indicators.itemHeight
-        width: parent.width
-        text: weatherModel.kelvin2celsius(temp_min).toFixed(0) + "\u00B0"
+        color: "#999999"
+        font.pixelSize: 14
+        text: WeatherModel.roundup(WeatherModel.kelvin2celsius(temp_day)) + "\u00B0"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
     Item {
-        height: indicators.itemHeight
+        height: 16
+        anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width
         Wind {
-            height: indicators.itemHeight/2
+            height: parent.height
             anchors.centerIn: parent
             angle: wind_degrees
             speed: wind_speed
         }
     }
     Text {
-        height: indicators.itemHeight
         width: parent.width
-        text: pressure.toFixed(0)
+        font.pixelSize: 10
+        color: "#999999"
+        text: WeatherModel.roundup(pressure)
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
     Text {
-        height: indicators.itemHeight
         width: parent.width
-        text: humidity.toFixed(0) + "%"
+        font.pixelSize: 10
+        color: "#999999"
+        text: WeatherModel.roundup(humidity) + "%"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
-    Text {
-        height: indicators.itemHeight
-        width: parent.width
-        text: rain_3h.toFixed(0) + " mm"
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-    }
-    Text {
-        height: indicators.itemHeight
-        width: parent.width
-        text: snow_3h.toFixed(0) + " mm"
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-    }
+    //    Text {
+    //        height: indicators.itemHeight
+    //        width: parent.width
+    //        text: rain_3h.toFixed(0) + " mm"
+    //        horizontalAlignment: Text.AlignHCenter
+    //        verticalAlignment: Text.AlignVCenter
+    //    }
+    //    Text {
+    //        height: indicators.itemHeight
+    //        width: parent.width
+    //        text: snow_3h.toFixed(0) + " mm"
+    //        horizontalAlignment: Text.AlignHCenter
+    //        verticalAlignment: Text.AlignVCenter
+    //    }
 }

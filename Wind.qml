@@ -5,13 +5,17 @@ Row {
     property real speed: 0
 
     spacing: 5
-    Image {
+    ColoredImage {
         height: parent.height
         width: parent.height
         rotation: angle
-        source: "Images/wind-arrow.png"
+        source: "images/wind-arrow.png"
+        overlayColor: WeatherModel.backgroundColor
     }
+
     Text {
-        text: speed
+        font.pixelSize: 10
+        color: "#999999"
+        text: speed.toFixed(1)
     }
 }

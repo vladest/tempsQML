@@ -4,13 +4,16 @@
 #include <QObject>
 #include <QDateTime>
 
-class WeatherForecastData: public QObject {
+class WeatherData: public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QDateTime timestamp READ timestamp WRITE set_timestamp NOTIFY timestamp_changed) //weather it the time
     Q_PROPERTY(qreal temp READ temp WRITE set_temp NOTIFY temp_changed)
     Q_PROPERTY(qreal temp_min READ temp_min WRITE set_temp_min NOTIFY temp_min_changed)
     Q_PROPERTY(qreal temp_max READ temp_max WRITE set_temp_max NOTIFY temp_max_changed)
+    Q_PROPERTY(qreal temp_morn READ temp_morn WRITE set_temp_morn NOTIFY temp_morn_changed)
+    Q_PROPERTY(qreal temp_eve READ temp_eve WRITE set_temp_eve NOTIFY temp_eve_changed)
+    Q_PROPERTY(qreal temp_night READ temp_night WRITE set_temp_night NOTIFY temp_night_changed)
     Q_PROPERTY(qreal pressure READ pressure WRITE set_pressure NOTIFY pressure_changed)
     Q_PROPERTY(qreal pressure_sea_level READ pressure_sea_level WRITE set_pressure_sea_level NOTIFY pressure_sea_level_changed)
     Q_PROPERTY(qreal pressure_grnd_level READ pressure_grnd_level WRITE set_pressure_grnd_level NOTIFY pressure_grnd_level_changed)
@@ -27,8 +30,8 @@ class WeatherForecastData: public QObject {
     Q_PROPERTY(qreal snow_3h READ snow_3h WRITE set_snow_3h NOTIFY snow_3h_changed)
     Q_PROPERTY(QString timestamp_string READ timestamp_string WRITE set_timestamp_string NOTIFY timestamp_string_changed)
 public:
-    WeatherForecastData(QObject *parent = 0);
-    virtual ~WeatherForecastData() {}
+    WeatherData(QObject *parent = 0);
+    virtual ~WeatherData() {}
     const QString dump();
 
     QDateTime timestamp() const;
@@ -57,7 +60,11 @@ public:
 //    inline bool operator<(const WeatherForecastData &w1, const WeatherForecastData &w2)
 //    {
 //        return w1.timestamp() < w2.timestamp();
-//    }
+    //    }
+    qreal temp_morn() const;
+    qreal temp_eve() const;
+    qreal temp_night() const;
+
 public slots:
     void set_timestamp(QDateTime timestamp);
     void set_temp(qreal temp);
@@ -78,6 +85,9 @@ public slots:
     void set_snow_3h(qreal snow_3h);
     void set_timestamp_string(QString timestamp_string);
     void set_pressure_grnd_level(qreal pressure_grnd_level);
+    void set_temp_morn(qreal temp_morn);
+    void set_temp_eve(qreal temp_eve);
+    void set_temp_night(qreal temp_night);
 
 signals:
     void timestamp_changed(QDateTime timestamp);
@@ -100,6 +110,12 @@ signals:
     void timestamp_string_changed(QString timestamp_string);
     void pressure_grnd_level_changed(qreal pressure_grnd_level);
 
+    void temp_morn_changed(qreal temp_morn);
+
+    void temp_eve_changed(qreal temp_eve);
+
+    void temp_night_changed(qreal temp_night);
+
 private:
 
     QDateTime m_timestamp;
@@ -121,6 +137,9 @@ private:
     qreal m_rain_3h;
     qreal m_snow_3h;
     QString m_timestamp_string;
+    qreal m_temp_morn;
+    qreal m_temp_eve;
+    qreal m_temp_night;
 };
 
 
