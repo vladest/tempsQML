@@ -1,15 +1,20 @@
 QT += qml quick positioning
 
-CONFIG += c++11
+CONFIG += c++11 flat
 
-SOURCES += main.cpp \
-    googlebrowserlocation.cpp \
-    weathermodel.cpp \
-    weatherdata.cpp \
-    weatherdailymodel.cpp
+SOURCES += src/main.cpp \
+    src/googlebrowserlocation.cpp \
+    src/weathermodel.cpp \
+    src/weatherdata.cpp \
+    src/weatherdailymodel.cpp
 
 RESOURCES += qml.qrc
 
+SRCMOC = .moc
+MOC_DIR = .moc
+OBJECTS_DIR = .obj
+
+INCLUDEPATH +=src
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
@@ -33,10 +38,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    googlebrowserlocation.h \
-    weathermodel.h \
-    weatherdata.h \
-    weatherdailymodel.h
-
-DISTFILES += \
-    MenuClose.qml
+    src/googlebrowserlocation.h \
+    src/weathermodel.h \
+    src/weatherdata.h \
+    src/weatherdailymodel.h
