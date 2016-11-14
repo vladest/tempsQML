@@ -56,7 +56,7 @@ ApplicationWindow {
                 width: 80
                 height: 80
                 anchors { top: parent.top; topMargin: parent.height * 0.14; left: parent.left; leftMargin: parent.width * 0.08; }
-                source: WeatherModel.currentWeather.weather_codition_icon_id == "" ?
+                source: WeatherModel.currentWeather.weather_codition_icon_id === "" ?
                             "images/icons/IconTemplate@02d.png" :
                             "images/icons/" + WeatherModel.currentWeather.weather_codition_icon_id + ".svg"
             }

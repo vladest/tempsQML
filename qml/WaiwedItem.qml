@@ -3,10 +3,22 @@ import QtQuick 2.7
 Rectangle {
     id: root
     property real yPage: 0
-    //onYPageChanged: console.log("y page", y)
     color: WeatherModel.backgroundColor
     signal settingsClicked
-    Behavior on color { PropertyAnimation { duration: 500 } }
+
+    PropertyAnimation {
+        target: root
+        running: WeatherModel.currentWeather.weather_codition_icon_id === "11d" ||
+                 WeatherModel.currentWeather.weather_codition_icon_id === "11n"
+        property: "opacity"
+        loops: Animation.Infinite
+        from: 0
+        to: 1
+        duration: 8000;
+        easing.type: Easing.OutElastic
+    }
+
+    Behavior on color { PropertyAnimation { duration: 500; } }
     Text {
         id: clock
         height: 20
