@@ -162,5 +162,6 @@
         <file>qml/images/termometer.png</file>
         <file>qml/images/umbrella.png</file>
         <file>qml/images/wind-arrow.png</file>
+        <file>qml/RainDrop.qml</file>
     </qresource>
 </RCC>
