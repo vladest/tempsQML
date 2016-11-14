@@ -64,7 +64,7 @@ ApplicationWindow {
                 height: 100
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: parent.height * 0.3
+                anchors.topMargin: parent.height * 0.3 - 30
                 Row {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.horizontalCenterOffset: degree.paintedWidth/2
