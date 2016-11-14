@@ -6,16 +6,25 @@ Rectangle {
     color: WeatherModel.backgroundColor
     signal settingsClicked
 
-    PropertyAnimation {
-        target: root
+    SequentialAnimation {
+        id: rainAnimation
         running: WeatherModel.currentWeather.weather_codition_icon_id === "11d" ||
                  WeatherModel.currentWeather.weather_codition_icon_id === "11n"
-        property: "opacity"
         loops: Animation.Infinite
-        from: 0
-        to: 1
-        duration: 8000;
-        easing.type: Easing.OutElastic
+
+        PropertyAnimation {
+            target: root
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: 500;
+            easing.type: Easing.OutElastic
+        }
+
+        //random pause between 1 and 7 seconds
+        PauseAnimation {
+            duration: Math.ceil(Math.random() * 6000) + 1000
+        }
     }
 
     Behavior on color { PropertyAnimation { duration: 500; } }
