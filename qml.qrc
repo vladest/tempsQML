@@ -166,5 +166,10 @@
         <file>qml/SnowFlake.qml</file>
         <file>qml/SettingsPage.qml</file>
         <file>qml/MainPage.qml</file>
+        <file>qml/images/app.png</file>
+        <file>qml/images/IconTemplate@2x.png</file>
+        <file>qml/SettingsButton.qml</file>
+        <file>qml/SettingsCheck.qml</file>
+        <file>qml/SettingsRadio.qml</file>
     </qresource>
 </RCC>

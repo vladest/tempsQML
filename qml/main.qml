@@ -19,18 +19,18 @@ ApplicationWindow {
         padding: 0
         anchors.fill: parent
         initialItem: mainComponent
-        popEnter: Transition {
-            PropertyAnimation { property: "opacity"; from: 0; to: 1; }
-        }
-        popExit: Transition {
-            PropertyAnimation { property: "opacity"; from: 1; to: 0; }
-        }
-        pushEnter: Transition {
-            PropertyAnimation { property: "opacity"; from: 1; to: 0; }
-        }
-        pushExit: Transition {
-            PropertyAnimation { property: "opacity"; from: 1; to: 0; }
-        }
+//        popEnter: Transition {
+//            PropertyAnimation { property: "opacity"; from: 0; to: 1; }
+//        }
+//        popExit: Transition {
+//            PropertyAnimation { property: "opacity"; from: 1; to: 0; }
+//        }
+//        pushEnter: Transition {
+//            PropertyAnimation { property: "opacity"; from: 1; to: 0; }
+//        }
+//        pushExit: Transition {
+//            PropertyAnimation { property: "opacity"; from: 1; to: 0; }
+//        }
 
         background: WaiwedItem {
             onSettingsClicked: {
@@ -38,7 +38,7 @@ ApplicationWindow {
                     backgr.yPage = 300
                     swipeView.pop()
                 } else {
-                    backgr.yPage = 160
+                    backgr.yPage = 100
                     itemSettings = swipeView.push(settings)
                 }
             }
