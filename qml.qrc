@@ -164,5 +164,7 @@
         <file>qml/images/wind-arrow.png</file>
         <file>qml/RainDrop.qml</file>
         <file>qml/SnowFlake.qml</file>
+        <file>qml/SettingsPage.qml</file>
+        <file>qml/MainPage.qml</file>
     </qresource>
 </RCC>
