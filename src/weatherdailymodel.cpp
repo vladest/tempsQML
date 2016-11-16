@@ -2,7 +2,6 @@
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QNetworkProxy>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -20,7 +19,6 @@ WeatherDailyModel::WeatherDailyModel(QAbstractListModel *parent) : QAbstractList
 {
     connect(&_updateTimer, &QTimer::timeout, this, &WeatherDailyModel::requestWeatherUpdate);
     _updateTimer.setSingleShot(false);
-    _nam.setProxy(QNetworkProxy::applicationProxy());
 }
 
 void WeatherDailyModel::requestWeatherUpdate()

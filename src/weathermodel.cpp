@@ -38,8 +38,6 @@ WeatherModel::WeatherModel(QAbstractItemModel *parent):
     QQmlEngine::setObjectOwnership(m_currentWeather, QQmlEngine::CppOwnership);
     connect(&_updateTimer, &QTimer::timeout, this, &WeatherModel::requestWeatherUpdate);
     _updateTimer.setSingleShot(false);
-
-    _nam.setProxy(QNetworkProxy::applicationProxy());
 }
 
 WeatherModel::~WeatherModel() {

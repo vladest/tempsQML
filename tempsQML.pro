@@ -1,4 +1,4 @@
-QT += qml quick positioning
+QT += qml quick positioning widgets
 
 CONFIG += c++11 flat
 
@@ -6,7 +6,8 @@ SOURCES += src/main.cpp \
     src/googlebrowserlocation.cpp \
     src/weathermodel.cpp \
     src/weatherdata.cpp \
-    src/weatherdailymodel.cpp
+    src/weatherdailymodel.cpp \
+    src/systemtrayicon.cpp
 
 RESOURCES += qml.qrc
 
@@ -41,4 +42,5 @@ HEADERS += \
     src/googlebrowserlocation.h \
     src/weathermodel.h \
     src/weatherdata.h \
-    src/weatherdailymodel.h
+    src/weatherdailymodel.h \
+    src/systemtrayicon.h

@@ -1,5 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Particles 2.0
+import weathermodel 1.0
 
 Rectangle {
     id: root
@@ -37,6 +38,13 @@ Rectangle {
     Connections {
         target: WeatherModel
         onCurrentWeatherChanged: {
+            SystemTrayIcon.setNewIcon("icons/"+WeatherModel.currentWeather.weather_codition_icon_id + ".svg")
+            SystemTrayIcon.toolTip = WeatherModel.currentWeather.weather_codition_description
+            SystemTrayIcon.show()
+            SystemTrayIcon.showMessage(WeatherModel.currentWeather.weather_codition_name,
+                                       WeatherModel.currentWeather.weather_codition_description
+                                       + " " + WeatherModel.roundup(WeatherModel.kelvin2celsius(WeatherModel.currentWeather.temp))
+                                       + "\u00B0C", 0, 3000)
             if (WeatherModel.currentWeather.weather_codition_name === 'Rain') {
                 if (WeatherModel.currentWeather.weather_codition_description.indexOf('light') !== -1) {
                     rainEmitter.emitRate = 5

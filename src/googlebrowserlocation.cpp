@@ -1,5 +1,4 @@
 #include "googlebrowserlocation.h"
-#include <QNetworkProxy>
 #include <QUrlQuery>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -12,10 +11,6 @@ QGeoCoordinate GoogleBrowserLocation::browserCoordinate() const
     return m_browserCoordinate;
 }
 
-//"url": "https://maps.googleapis.com/maps/api/timezone/json",
-//"apikey": "AIzaSyCDBVNwnbTjzXCZbKdJEJmkCwVKIK-aFlo",
-//"offset": 7200
-
 void GoogleBrowserLocation::requestTimezone(const QGeoCoordinate &coord)
 {
     QUrl url(QStringLiteral("https://maps.googleapis.com/maps/api/timezone/json"));
@@ -26,8 +21,6 @@ void GoogleBrowserLocation::requestTimezone(const QGeoCoordinate &coord)
     url.setQuery(query);
     QNetworkRequest req(url);
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-    nam.setProxy(QNetworkProxy::applicationProxy());
-    //nam.setProxy(QNetworkProxy::DefaultProxy);
     QNetworkReply *r = nam.get(req);
     connect(r, &QNetworkReply::finished, this, &GoogleBrowserLocation::onTimezoneFinished);
 }
@@ -41,8 +34,6 @@ void GoogleBrowserLocation::requestCoordinates()
     url.setQuery(query);
     QNetworkRequest req(url);
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-    nam.setProxy(QNetworkProxy::applicationProxy());
-    //nam.setProxy(QNetworkProxy::DefaultProxy);
     QNetworkReply *r = nam.get(req);
     connect(r, &QNetworkReply::finished, this, &GoogleBrowserLocation::onFinished);
 }
