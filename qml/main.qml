@@ -19,18 +19,18 @@ ApplicationWindow {
         padding: 0
         anchors.fill: parent
         initialItem: mainComponent
-//        popEnter: Transition {
-//            PropertyAnimation { property: "opacity"; from: 0; to: 1; }
-//        }
-//        popExit: Transition {
-//            PropertyAnimation { property: "opacity"; from: 1; to: 0; }
-//        }
-//        pushEnter: Transition {
-//            PropertyAnimation { property: "opacity"; from: 1; to: 0; }
-//        }
-//        pushExit: Transition {
-//            PropertyAnimation { property: "opacity"; from: 1; to: 0; }
-//        }
+        popEnter: Transition {
+            PropertyAnimation { property: "opacity"; from: 0; to: 1; duration: 800 }
+        }
+        popExit: Transition {
+            PropertyAnimation { property: "opacity"; from: 1; to: 0; duration: 800 }
+        }
+        pushEnter: Transition {
+            PropertyAnimation { property: "opacity"; from: 0; to: 1; duration: 800 }
+        }
+        pushExit: Transition {
+            PropertyAnimation { property: "opacity"; from: 1; to: 0; duration: 800 }
+        }
 
         background: WaiwedItem {
             onSettingsClicked: {
