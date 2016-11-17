@@ -39,7 +39,7 @@ Item {
             width: parent.width
             color: "#999999"
             font.pixelSize: 14
-            text: WeatherModel.roundup(WeatherModel.kelvin2celsius(temp_day)) + "\u00B0"
+            text: WeatherModel.roundup(WeatherModel.convertToCurrentScale(temp_day)) + "\u00B0"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }

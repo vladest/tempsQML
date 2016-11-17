@@ -44,7 +44,7 @@ Rectangle {
             SystemTrayIcon.showMessage(WeatherModel.currentWeather.weather_codition_name,
                                        WeatherModel.currentWeather.weather_codition_description
                                        + " " + WeatherModel.roundup(WeatherModel.kelvin2celsius(WeatherModel.currentWeather.temp))
-                                       + "\u00B0C", 0, 3000)
+                                       + "\u00B0" + WeatherModel.temperatureScale, 0, 3000)
             if (WeatherModel.currentWeather.weather_codition_name === 'Rain') {
                 if (WeatherModel.currentWeather.weather_codition_description.indexOf('light') !== -1) {
                     rainEmitter.emitRate = 5

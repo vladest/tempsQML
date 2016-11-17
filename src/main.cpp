@@ -13,6 +13,10 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setApplicationName("tempQML");
+    QCoreApplication::setOrganizationName("vladest");
+    QCoreApplication::setOrganizationDomain("vladest.org");
+
     QApplication app(argc, argv);
 
     QNetworkProxyFactory::setUseSystemConfiguration(true);

@@ -32,9 +32,18 @@ WeatherModel::WeatherModel(QAbstractItemModel *parent):
   , m_currentWeather(new WeatherData)
   , m_backgroundColor(QColor("#CCCCCC"))
   , m_TimezoneOffset(0)
+  , m_showAnimation(true)
+  , m_menuBarWeather(true)
+  , m_runAtStartup(true)
+  , m_tempScale(Celsium)
 {
     qmlRegisterType<WeatherData>("weathermodel", 1, 0, "WeatherData");
+    qmlRegisterType<WeatherModel>("weathermodel", 1, 0, "Weather");
 
+    setTempScale((TemperatureScales)settings.value("temp_scale", Celsium).toInt());
+    setMenuBarWeather(settings.value("sys_tray", true).toBool());
+    setRunAtStartup(settings.value("run_startup", true).toBool());
+    setShowAnimation(settings.value("animation_fx", true).toBool());
     QQmlEngine::setObjectOwnership(m_currentWeather, QQmlEngine::CppOwnership);
     connect(&_updateTimer, &QTimer::timeout, this, &WeatherModel::requestWeatherUpdate);
     _updateTimer.setSingleShot(false);
@@ -238,13 +247,47 @@ void WeatherModel::setDaysNumber(int daysNumber)
         return;
 
     m_daysNumber = daysNumber;
-    qDebug() << "days number" << daysNumber;
+    //qDebug() << "days number" << daysNumber;
     emit daysNumberChanged(daysNumber);
+}
+
+void WeatherModel::setTempScale(TemperatureScales tempScale)
+{
+    m_tempScale = tempScale;
+    settings.setValue("temp_scale", tempScale);
+    qDebug() << "temp scale" << tempScale;
+    emit tempScaleChanged(tempScale);
+    emit temperatureScaleChanged(temperatureScale());
+}
+
+WeatherModel::TemperatureScales WeatherModel::tempScale() const
+{
+    return m_tempScale;
 }
 
 QList<QColor> WeatherModel::colorsTable()
 {
     return _colorsTable;
+}
+
+QString WeatherModel::temperatureScale() const
+{
+    return m_tempScale == Celsium ? "C" :"F";
+}
+
+bool WeatherModel::showAnimation() const
+{
+    return m_showAnimation;
+}
+
+bool WeatherModel::menuBarWeather() const
+{
+    return m_menuBarWeather;
+}
+
+bool WeatherModel::runAtStartup() const
+{
+    return m_runAtStartup;
 }
 
 int WeatherModel::getTimezoneOffset() const
@@ -256,6 +299,36 @@ void WeatherModel::setTimezoneOffset(int TimezoneOffset)
 {
     m_TimezoneOffset = TimezoneOffset;
     requestWeatherUpdate();
+}
+
+void WeatherModel::setShowAnimation(bool showAnimation)
+{
+    if (m_showAnimation == showAnimation)
+        return;
+
+    m_showAnimation = showAnimation;
+    emit showAnimationChanged(showAnimation);
+    settings.setValue("animation_fx", showAnimation);
+}
+
+void WeatherModel::setMenuBarWeather(bool menuBarWeather)
+{
+    if (m_menuBarWeather == menuBarWeather)
+        return;
+
+    m_menuBarWeather = menuBarWeather;
+    emit menuBarWeatherChanged(menuBarWeather);
+    settings.setValue("sys_tray", menuBarWeather);
+}
+
+void WeatherModel::setRunAtStartup(bool runAtStartup)
+{
+    if (m_runAtStartup == runAtStartup)
+        return;
+
+    m_runAtStartup = runAtStartup;
+    emit runAtStartupChanged(runAtStartup);
+    settings.setValue("run_startup", runAtStartup);
 }
 
 void parseMainObject(const QJsonObject &obj, WeatherData *wData) {
@@ -425,6 +498,11 @@ void WeatherModel::setUpdateInterval(int updateInterval)
     } else {
         _updateTimer.stop();
     }
+}
+
+qreal WeatherModel::convertToCurrentScale(qreal temp_k)
+{
+    return m_tempScale == Celsium ? kelvin2celsius(temp_k) : kelvin2fahrenheit(temp_k);
 }
 
 int WeatherModel::daysNumber() const

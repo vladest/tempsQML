@@ -21,7 +21,7 @@ Item {
             Text {
                 font.pixelSize: 48
                 color: "white"
-                text: WeatherModel.roundup(WeatherModel.kelvin2celsius(WeatherModel.currentWeather.temp))
+                text: WeatherModel.roundup(WeatherModel.convertToCurrentScale(WeatherModel.currentWeather.temp))
             }
             Text {
                 id: degree

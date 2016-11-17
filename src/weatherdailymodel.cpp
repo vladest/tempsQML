@@ -218,7 +218,7 @@ void WeatherDailyModel::onWeatherDailyRequestFinished()
                 wData->set_rain_3h(obj1.value("rain").toDouble());
                 wData->set_snow_3h(obj1.value("snow").toDouble());
                 m_dailyList.append(wData);
-                //qDebug() << wData->dump();
+                //qDebug() << wData->dump() << "\n";
             }
         }
         endResetModel();

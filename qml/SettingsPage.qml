@@ -1,5 +1,6 @@
 import QtQuick 2.5
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.2
+import weathermodel 1.0
 
 Item {
 
@@ -41,6 +42,7 @@ Item {
         }
         TextField {
             width: parent.width
+            text: WeatherModel.cityName + ", " + WeatherModel.countryID
             font.pixelSize: 16
             background: Rectangle {
                 width: parent.width
@@ -59,32 +61,45 @@ Item {
             }
             Item {
                 width: 20; height: 1
-
             }
 
+            ButtonGroup { id: scaleGroup }
+
             SettingsRadio {
+                id: cels
                 font.pixelSize: 18
                 text: "\u00B0C"
+                checked: WeatherModel.tempScale === Weather.Celsium
+                ButtonGroup.group: scaleGroup
             }
             SettingsRadio {
+                id: fahr
                 font.pixelSize: 18
                 text: "\u00B0F"
+                checked: WeatherModel.tempScale === Weather.Fahrenheit
+                ButtonGroup.group: scaleGroup
             }
         }
         SettingsCheck {
+            id: systray
             width: parent.width
             leftPadding: 0
             text: qsTr("Show weather in menubar")
+            checked: WeatherModel.menuBarWeather
         }
         SettingsCheck {
+            id: startup
             width: parent.width
             leftPadding: 0
             text: qsTr("Start at login")
+            checked: WeatherModel.runAtStartup
         }
         SettingsCheck {
+            id: anim
             width: parent.width
             leftPadding: 0
             text: qsTr("Show weather animation")
+            checked: WeatherModel.showAnimation
         }
         Row {
             width: parent.width
@@ -92,10 +107,17 @@ Item {
             SettingsButton {
                 width: parent.width/2 - 5
                 text: qsTr("Apply")
+                onClicked: {
+                    WeatherModel.menuBarWeather = systray.checked
+                    WeatherModel.runAtStartup = startup.checked
+                    WeatherModel.showAnimation = anim.checked
+                    WeatherModel.tempScale = fahr.checked ? Weather.Fahrenheit : Weather.Celsium
+                }
             }
             SettingsButton {
                 width: parent.width/2 - 5
                 text: qsTr("Quit")
+                onClicked: Qt.quit()
             }
         }
     }
