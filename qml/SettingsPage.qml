@@ -42,7 +42,7 @@ Item {
         }
         TextField {
             width: parent.width
-            text: WeatherModel.cityName + ", " + WeatherModel.countryID
+            text: weatherModel.cityName + ", " + weatherModel.countryID
             font.pixelSize: 16
             background: Rectangle {
                 width: parent.width
@@ -69,14 +69,14 @@ Item {
                 id: cels
                 font.pixelSize: 18
                 text: "\u00B0C"
-                checked: WeatherModel.tempScale === Weather.Celsium
+                checked: weatherCommon.tempScale === WeatherCommon.Celsium
                 ButtonGroup.group: scaleGroup
             }
             SettingsRadio {
                 id: fahr
                 font.pixelSize: 18
                 text: "\u00B0F"
-                checked: WeatherModel.tempScale === Weather.Fahrenheit
+                checked: weatherCommon.tempScale === WeatherCommon.Fahrenheit
                 ButtonGroup.group: scaleGroup
             }
         }
@@ -85,21 +85,21 @@ Item {
             width: parent.width
             leftPadding: 0
             text: qsTr("Show weather in menubar")
-            checked: WeatherModel.menuBarWeather
+            checked: weatherCommon.menuBarWeather
         }
         SettingsCheck {
             id: startup
             width: parent.width
             leftPadding: 0
             text: qsTr("Start at login")
-            checked: WeatherModel.runAtStartup
+            checked: weatherCommon.runAtStartup
         }
         SettingsCheck {
             id: anim
             width: parent.width
             leftPadding: 0
             text: qsTr("Show weather animation")
-            checked: WeatherModel.showAnimation
+            checked: weatherCommon.showAnimation
         }
         Row {
             width: parent.width
@@ -108,10 +108,10 @@ Item {
                 width: parent.width/2 - 5
                 text: qsTr("Apply")
                 onClicked: {
-                    WeatherModel.menuBarWeather = systray.checked
-                    WeatherModel.runAtStartup = startup.checked
-                    WeatherModel.showAnimation = anim.checked
-                    WeatherModel.tempScale = fahr.checked ? Weather.Fahrenheit : Weather.Celsium
+                    weatherCommon.menuBarWeather = systray.checked
+                    weatherCommon.runAtStartup = startup.checked
+                    weatherCommon.showAnimation = anim.checked
+                    weatherCommon.tempScale = fahr.checked ? WeatherCommon.Fahrenheit : WeatherCommon.Celsium
                 }
             }
             SettingsButton {

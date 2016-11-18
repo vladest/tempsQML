@@ -5,9 +5,9 @@ Item {
         width: 80
         height: 80
         anchors { top: parent.top; topMargin: parent.height * 0.14; left: parent.left; leftMargin: parent.width * 0.08; }
-        source: WeatherModel.currentWeather.weather_codition_icon_id === "" ?
+        source: weatherModel.currentWeather.weather_codition_icon_id === "" ?
                     "images/icons/IconTemplate@02d.png" :
-                    "images/icons/" + WeatherModel.currentWeather.weather_codition_icon_id + ".svg"
+                    "images/icons/" + weatherModel.currentWeather.weather_codition_icon_id + ".svg"
     }
     Column {
         height: 100
@@ -21,7 +21,7 @@ Item {
             Text {
                 font.pixelSize: 48
                 color: "white"
-                text: WeatherModel.roundup(WeatherModel.convertToCurrentScale(WeatherModel.currentWeather.temp))
+                text: weatherCommon.roundup(weatherCommon.convertToCurrentScale(weatherModel.currentWeather.temp))
             }
             Text {
                 id: degree
@@ -44,7 +44,7 @@ Item {
             font.pixelSize: 18
             color: "white"
             opacity: 0.5
-            text: WeatherModel.currentWeather.weather_codition_description
+            text: weatherModel.currentWeather.weather_codition_description
         }
     }
     Item {
@@ -62,7 +62,7 @@ Item {
                 width: parent.width/2
                 font.pixelSize: 12
                 color: "#999999"
-                text: Qt.formatDate(WeatherModel.currentWeather.timestamp, "dddd, MMM d")
+                text: Qt.formatDate(weatherModel.currentWeather.timestamp, "dddd, MMM d")
                 horizontalAlignment: Text.AlignHCenter
             }
 
@@ -70,12 +70,12 @@ Item {
                 width: parent.width/2
                 font.pixelSize: 12
                 color: "#999999"
-                text: WeatherModel.cityName.toLowerCase() + ", " + WeatherModel.countryID.toLowerCase()
+                text: weatherModel.cityName.toLowerCase() + ", " + weatherModel.countryID.toLowerCase()
                 horizontalAlignment: Text.AlignHCenter
             }
         }
         ListView {
-            model: WeatherDailyModel
+            model: weatherDailyModel
             clip: true
             interactive: true
             orientation: ListView.Horizontal

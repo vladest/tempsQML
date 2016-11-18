@@ -7,7 +7,8 @@ SOURCES += src/main.cpp \
     src/weathermodel.cpp \
     src/weatherdata.cpp \
     src/weatherdailymodel.cpp \
-    src/systemtrayicon.cpp
+    src/systemtrayicon.cpp \
+    src/weathercommon.cpp
 
 RESOURCES += qml.qrc
 
@@ -43,4 +44,5 @@ HEADERS += \
     src/weathermodel.h \
     src/weatherdata.h \
     src/weatherdailymodel.h \
-    src/systemtrayicon.h
+    src/systemtrayicon.h \
+    src/weathercommon.h

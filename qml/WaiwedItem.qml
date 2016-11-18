@@ -5,7 +5,7 @@ import weathermodel 1.0
 Rectangle {
     id: root
     property real yPage: 0
-    color: WeatherModel.backgroundColor
+    color: weatherCommon.backgroundColor
     signal settingsClicked
     state: "none"
 
@@ -13,8 +13,8 @@ Rectangle {
     SequentialAnimation {
         id: rainAnimation
         //running only on certain weather conditions
-        running: WeatherModel.currentWeather.weather_codition_icon_id === "11d" ||
-                 WeatherModel.currentWeather.weather_codition_icon_id === "11n"
+        running: weatherModel.currentWeather.weather_codition_icon_id === "11d" ||
+                 weatherModel.currentWeather.weather_codition_icon_id === "11n"
         loops: Animation.Infinite
 
         //the idea is to quick change opacity...
@@ -36,25 +36,25 @@ Rectangle {
     //setup snow or rain particles
     //using particles subsystem
     Connections {
-        target: WeatherModel
+        target: weatherModel
         onCurrentWeatherChanged: {
-            SystemTrayIcon.setNewIcon("icons/"+WeatherModel.currentWeather.weather_codition_icon_id + ".svg")
-            SystemTrayIcon.toolTip = WeatherModel.currentWeather.weather_codition_description
-            SystemTrayIcon.show()
-            SystemTrayIcon.showMessage(WeatherModel.currentWeather.weather_codition_name,
-                                       WeatherModel.currentWeather.weather_codition_description
-                                       + " " + WeatherModel.roundup(WeatherModel.kelvin2celsius(WeatherModel.currentWeather.temp))
-                                       + "\u00B0" + WeatherModel.temperatureScale, 0, 3000)
-            if (WeatherModel.currentWeather.weather_codition_name === 'Rain') {
-                if (WeatherModel.currentWeather.weather_codition_description.indexOf('light') !== -1) {
+            systemTrayIcon.setNewIcon("icons/"+weatherModel.currentWeather.weather_codition_icon_id + ".svg")
+            systemTrayIcon.toolTip = weatherModel.currentWeather.weather_codition_description
+            systemTrayIcon.show()
+            systemTrayIcon.showMessage(weatherModel.currentWeather.weather_codition_name,
+                                       weatherModel.currentWeather.weather_codition_description
+                                       + " " + weatherCommon.roundup(weatherCommon.convertToCurrentScale(weatherModel.currentWeather.temp))
+                                       + "\u00B0" + weatherCommon.temperatureScale, 0, 3000)
+            if (weatherModel.currentWeather.weather_codition_name === 'Rain') {
+                if (weatherModel.currentWeather.weather_codition_description.indexOf('light') !== -1) {
                     rainEmitter.emitRate = 5
-                } else if (WeatherModel.currentWeather.weather_codition_description.indexOf('heavy') !== -1) {
+                } else if (weatherModel.currentWeather.weather_codition_description.indexOf('heavy') !== -1) {
                     rainEmitter.emitRate = 20
                 } else {
                     rainEmitter.emitRate = 10
                 }
                 root.state = "rain"
-            } else if (WeatherModel.currentWeather.weather_codition_name === 'Snow') {
+            } else if (weatherModel.currentWeather.weather_codition_name === 'Snow') {
                 snowEmitter.emitRate = 10
                 root.state = "snow"
             }

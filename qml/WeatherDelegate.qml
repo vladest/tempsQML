@@ -32,14 +32,14 @@ Item {
             height: 59
             width: 59
             source: "images/icons/" + weather_codition_icon_id + ".svg"
-            overlayColor: WeatherModel.backgroundColor
+            overlayColor: weatherCommon.backgroundColor
         }
 
         Text {
             width: parent.width
             color: "#999999"
             font.pixelSize: 14
-            text: WeatherModel.roundup(WeatherModel.convertToCurrentScale(temp_day)) + "\u00B0"
+            text: weatherCommon.roundup(weatherCommon.convertToCurrentScale(temp_day)) + "\u00B0"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
@@ -58,7 +58,7 @@ Item {
             width: parent.width
             font.pixelSize: 10
             color: "#999999"
-            text: WeatherModel.roundup(pressure)
+            text: weatherCommon.roundup(pressure)
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
@@ -66,7 +66,7 @@ Item {
             width: parent.width
             font.pixelSize: 10
             color: "#999999"
-            text: WeatherModel.roundup(humidity) + "%"
+            text: weatherCommon.roundup(humidity) + "%"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }

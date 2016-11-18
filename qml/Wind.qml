@@ -10,7 +10,7 @@ Row {
         width: parent.height
         rotation: angle
         source: "images/wind-arrow.png"
-        overlayColor: WeatherModel.backgroundColor
+        overlayColor: weatherCommon.backgroundColor
     }
 
     Text {

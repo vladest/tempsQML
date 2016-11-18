@@ -1,6 +1,6 @@
 #include "weatherdata.h"
 #include <QTextStream>
-#include "weathermodel.h"
+#include "weathercommon.h"
 
 WeatherData::WeatherData(QObject *parent): QObject(parent)
 {
@@ -43,9 +43,9 @@ const QString WeatherData::dump() {
              " snow_3h: %19")
             .arg(timestamp().toString())
             .arg(timestamp_string())
-            .arg(WeatherModel::kelvin2celsius(temp()))
-            .arg(WeatherModel::kelvin2celsius(temp_min()))
-            .arg(WeatherModel::kelvin2celsius(temp_max()))
+            .arg(WeatherCommon::kelvin2celsius(temp()))
+            .arg(WeatherCommon::kelvin2celsius(temp_min()))
+            .arg(WeatherCommon::kelvin2celsius(temp_max()))
             .arg(pressure())
             .arg(pressure_grnd_level())
             .arg(pressure_sea_level())

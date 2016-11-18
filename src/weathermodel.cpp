@@ -1,51 +1,24 @@
 #include "weathermodel.h"
+#include <QtQml/QQmlEngine>
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
-#include <QtQml>
 
 const QString weatherForecastUrl = "http://api.openweathermap.org/data/2.5/forecast?";
 const QString weatherCurrentUrl = "http://api.openweathermap.org/data/2.5/weather?";
 const QString appID = "&appid=483240f16c1aa9e5feab1fa41c9d273a";
 
-//"error" : "#444444",
-//"list": ["#b1695a", "#DB9864", "#E3BB88", "#D0C7A8", "#B1C2A3", "#80BBB2", "#6D9E96", "#8F95A5", "#6F7685"]
-
-QList<QColor> WeatherModel::_colorsTable = QList<QColor>()
-        << QColor("#444444") //error
-        << QColor("#b1695a")
-        << QColor("#DB9864")
-        << QColor("#E3BB88")
-        << QColor("#D0C7A8")
-        << QColor("#B1C2A3")
-        << QColor("#80BBB2")
-        << QColor("#6D9E96")
-        << QColor("#8F95A5")
-        << QColor("#6F7685");
-
-WeatherModel::WeatherModel(QAbstractItemModel *parent):
-    QAbstractListModel(parent)
+WeatherModel::WeatherModel(WeatherCommon *wcommon, QAbstractListModel *parent):  QAbstractListModel(parent)
+  , m_wcommon(wcommon)
   , _updateInterval(-1)
   , m_daysNumber(0)
   , m_currentWeather(new WeatherData)
-  , m_backgroundColor(QColor("#CCCCCC"))
-  , m_TimezoneOffset(0)
-  , m_showAnimation(true)
-  , m_menuBarWeather(true)
-  , m_runAtStartup(true)
-  , m_tempScale(Celsium)
 {
-    qmlRegisterType<WeatherData>("weathermodel", 1, 0, "WeatherData");
-    qmlRegisterType<WeatherModel>("weathermodel", 1, 0, "Weather");
-
-    setTempScale((TemperatureScales)settings.value("temp_scale", Celsium).toInt());
-    setMenuBarWeather(settings.value("sys_tray", true).toBool());
-    setRunAtStartup(settings.value("run_startup", true).toBool());
-    setShowAnimation(settings.value("animation_fx", true).toBool());
     QQmlEngine::setObjectOwnership(m_currentWeather, QQmlEngine::CppOwnership);
     connect(&_updateTimer, &QTimer::timeout, this, &WeatherModel::requestWeatherUpdate);
+    connect(wcommon, &WeatherCommon::requestWeatherUpdate, this, &WeatherModel::requestWeatherUpdate);
     _updateTimer.setSingleShot(false);
 }
 
@@ -53,17 +26,11 @@ WeatherModel::~WeatherModel() {
     delete m_currentWeather;
 }
 
-void WeatherModel::setCoordinates(const QGeoCoordinate &coordinate)
-{
-    if (coordinate != m_coordinate) {
-        m_coordinate = coordinate;
-    }
-}
-
 void WeatherModel::requestWeatherUpdate()
 {
-    QUrl forecasturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherForecastUrl).arg(m_coordinate.latitude()).arg(m_coordinate.longitude()).arg(appID));
-    QUrl currentturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherCurrentUrl).arg(m_coordinate.latitude()).arg(m_coordinate.longitude()).arg(appID));
+    const QGeoCoordinate &coord = m_wcommon->getCoordinate();
+    QUrl forecasturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherForecastUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
+    QUrl currentturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherCurrentUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
 
     QNetworkRequest req = QNetworkRequest(forecasturl);
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
@@ -215,32 +182,6 @@ void WeatherModel::setCurrentWeather(WeatherData *currentWeather)
     emit currentWeatherChanged(currentWeather);
 }
 
-void WeatherModel::setBackgroundColor(qreal temp)
-{
-    int index = 9;
-    qreal temp_c = roundup(kelvin2celsius(temp));
-    if (temp_c > 30) {
-        index = 1;
-    } else if (temp_c > 26) {
-        index = 2;
-    } else if (temp_c > 22) {
-        index = 3;
-    } else if (temp_c > 18) {
-        index = 4;
-    } else if (temp_c > 14) {
-        index = 5;
-    } else if (temp_c > 10) {
-        index = 6;
-    } else if (temp_c > 6) {
-        index = 7;
-    } else if (temp_c > 2) {
-        index = 8;
-    }
-
-    m_backgroundColor = _colorsTable.at(index);
-    emit backgroundColorChanged(temp);
-}
-
 void WeatherModel::setDaysNumber(int daysNumber)
 {
     if (m_daysNumber == daysNumber)
@@ -251,85 +192,6 @@ void WeatherModel::setDaysNumber(int daysNumber)
     emit daysNumberChanged(daysNumber);
 }
 
-void WeatherModel::setTempScale(TemperatureScales tempScale)
-{
-    m_tempScale = tempScale;
-    settings.setValue("temp_scale", tempScale);
-    qDebug() << "temp scale" << tempScale;
-    emit tempScaleChanged(tempScale);
-    emit temperatureScaleChanged(temperatureScale());
-}
-
-WeatherModel::TemperatureScales WeatherModel::tempScale() const
-{
-    return m_tempScale;
-}
-
-QList<QColor> WeatherModel::colorsTable()
-{
-    return _colorsTable;
-}
-
-QString WeatherModel::temperatureScale() const
-{
-    return m_tempScale == Celsium ? "C" :"F";
-}
-
-bool WeatherModel::showAnimation() const
-{
-    return m_showAnimation;
-}
-
-bool WeatherModel::menuBarWeather() const
-{
-    return m_menuBarWeather;
-}
-
-bool WeatherModel::runAtStartup() const
-{
-    return m_runAtStartup;
-}
-
-int WeatherModel::getTimezoneOffset() const
-{
-    return m_TimezoneOffset;
-}
-
-void WeatherModel::setTimezoneOffset(int TimezoneOffset)
-{
-    m_TimezoneOffset = TimezoneOffset;
-    requestWeatherUpdate();
-}
-
-void WeatherModel::setShowAnimation(bool showAnimation)
-{
-    if (m_showAnimation == showAnimation)
-        return;
-
-    m_showAnimation = showAnimation;
-    emit showAnimationChanged(showAnimation);
-    settings.setValue("animation_fx", showAnimation);
-}
-
-void WeatherModel::setMenuBarWeather(bool menuBarWeather)
-{
-    if (m_menuBarWeather == menuBarWeather)
-        return;
-
-    m_menuBarWeather = menuBarWeather;
-    emit menuBarWeatherChanged(menuBarWeather);
-    settings.setValue("sys_tray", menuBarWeather);
-}
-
-void WeatherModel::setRunAtStartup(bool runAtStartup)
-{
-    if (m_runAtStartup == runAtStartup)
-        return;
-
-    m_runAtStartup = runAtStartup;
-    emit runAtStartupChanged(runAtStartup);
-    settings.setValue("run_startup", runAtStartup);
-}
 
 void parseMainObject(const QJsonObject &obj, WeatherData *wData) {
     wData->set_temp(obj.value("temp").toDouble());
@@ -370,7 +232,7 @@ void WeatherModel::onWeatherCurrentRequestFinished()
         QJsonDocument  jsonDoc = QJsonDocument::fromJson(arr);
 
         QJsonObject obj = jsonDoc.object();
-        m_currentWeather->set_timestamp(QDateTime::fromTime_t(obj.value("dt").toInt(), Qt::UTC, m_TimezoneOffset));
+        m_currentWeather->set_timestamp(QDateTime::fromTime_t(obj.value("dt").toInt(), Qt::UTC, m_wcommon->getTimezoneOffset()));
         //wData->set_timestamp(QDateTime::fromString(wData->timestamp_string(), "yyyy-MM-dd HH:mm:ss"));
         QJsonObject mainObj = obj.value("main").toObject();
 
@@ -398,7 +260,7 @@ void WeatherModel::onWeatherCurrentRequestFinished()
         if (!snowObj.isEmpty()) {
             m_currentWeather->set_snow_3h(snowObj.value("3h").toDouble());
         }
-        setBackgroundColor(m_currentWeather->temp());
+        m_wcommon->setBackgroundColor(m_currentWeather->temp());
         emit currentWeatherChanged(m_currentWeather);
     }
 }
@@ -437,7 +299,7 @@ void WeatherModel::onWeatherForecastRequestFinished()
             if (!obj1.isEmpty()) {
                 WeatherData *wData = new WeatherData;
                 QQmlEngine::setObjectOwnership(wData, QQmlEngine::CppOwnership);
-                wData->set_timestamp(QDateTime::fromTime_t(obj1.value("dt").toInt(), Qt::UTC, m_TimezoneOffset));
+                wData->set_timestamp(QDateTime::fromTime_t(obj1.value("dt").toInt(), Qt::UTC, m_wcommon->getTimezoneOffset()));
                 wData->set_timestamp_string(obj1.value("dt_txt").toString());
                 //wData->set_timestamp(QDateTime::fromString(wData->timestamp_string(), "yyyy-MM-dd HH:mm:ss"));
                 QJsonObject mainObj = obj1.value("main").toObject();
@@ -500,11 +362,6 @@ void WeatherModel::setUpdateInterval(int updateInterval)
     }
 }
 
-qreal WeatherModel::convertToCurrentScale(qreal temp_k)
-{
-    return m_tempScale == Celsium ? kelvin2celsius(temp_k) : kelvin2fahrenheit(temp_k);
-}
-
 int WeatherModel::daysNumber() const
 {
     return m_daysNumber;
@@ -513,11 +370,6 @@ int WeatherModel::daysNumber() const
 WeatherData *WeatherModel::currentWeather() const
 {
     return m_currentWeather;
-}
-
-QColor WeatherModel::backgroundColor() const
-{
-    return m_backgroundColor;
 }
 
 WeatherData *WeatherModel::getAverageWeather(int dayindex)

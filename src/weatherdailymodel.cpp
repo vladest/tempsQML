@@ -12,29 +12,24 @@
 const QString weatherDailyUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?";
 const QString appID = "&appid=483240f16c1aa9e5feab1fa41c9d273a";
 
-WeatherDailyModel::WeatherDailyModel(QAbstractListModel *parent) : QAbstractListModel(parent)
+WeatherDailyModel::WeatherDailyModel(WeatherCommon *wcommon, QAbstractListModel *parent) : QAbstractListModel(parent)
   , _updateInterval(-1)
   , m_daysNumber(0)
-  , m_TimezoneOffset(0)
+  , m_wcommon(wcommon)
 {
     connect(&_updateTimer, &QTimer::timeout, this, &WeatherDailyModel::requestWeatherUpdate);
+    connect(wcommon, &WeatherCommon::requestWeatherUpdate, this, &WeatherDailyModel::requestWeatherUpdate);
     _updateTimer.setSingleShot(false);
 }
 
 void WeatherDailyModel::requestWeatherUpdate()
 {
-    QUrl dailyurl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherDailyUrl).arg(m_coordinate.latitude()).arg(m_coordinate.longitude()).arg(appID));
+    const QGeoCoordinate &coord = m_wcommon->getCoordinate();
+    QUrl dailyurl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherDailyUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
     QNetworkRequest req = QNetworkRequest(dailyurl);
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     QNetworkReply *replyDaily = _nam.get(QNetworkRequest(req));
     connect(replyDaily, &QNetworkReply::finished, this, &WeatherDailyModel::onWeatherDailyRequestFinished);
-}
-
-void WeatherDailyModel::setCoordinates(const QGeoCoordinate &coordinate)
-{
-    if (coordinate != m_coordinate) {
-        m_coordinate = coordinate;
-    }
 }
 
 QString WeatherDailyModel::cityName() const
@@ -155,17 +150,6 @@ void WeatherDailyModel::setDaysNumber(int daysNumber)
     emit daysNumberChanged(daysNumber);
 }
 
-int WeatherDailyModel::getTimezoneOffset() const
-{
-    return m_TimezoneOffset;
-}
-
-void WeatherDailyModel::setTimezoneOffset(int TimezoneOffset)
-{
-    m_TimezoneOffset = TimezoneOffset;
-    requestWeatherUpdate();
-}
-
 void WeatherDailyModel::onWeatherDailyRequestFinished()
 {
     QNetworkReply *reply = static_cast<QNetworkReply *>(sender());
@@ -185,7 +169,7 @@ void WeatherDailyModel::onWeatherDailyRequestFinished()
             if (!obj1.isEmpty()) {
                 WeatherData *wData = new WeatherData;
                 QQmlEngine::setObjectOwnership(wData, QQmlEngine::CppOwnership);
-                wData->set_timestamp(QDateTime::fromTime_t(obj1.value("dt").toInt(), Qt::UTC, m_TimezoneOffset));
+                wData->set_timestamp(QDateTime::fromTime_t(obj1.value("dt").toInt(), Qt::UTC, m_wcommon->getTimezoneOffset()));
                 QJsonObject tempObj = obj1.value("temp").toObject();
 
                 if (!tempObj.isEmpty()) {

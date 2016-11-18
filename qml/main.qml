@@ -56,6 +56,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        BrowserCoordinate.requestCoordinates()
+        browserCoordinate.requestCoordinates()
     }
 }

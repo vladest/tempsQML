@@ -9,6 +9,7 @@
 #include <QNetworkAccessManager>
 #include <QGeoCoordinate>
 #include "weatherdata.h"
+#include "weathercommon.h"
 
 class WeatherDailyModel : public QAbstractListModel
 {
@@ -42,10 +43,8 @@ public:
         SnowRole
     };
 
-    explicit WeatherDailyModel(QAbstractListModel *parent = nullptr);
+    explicit WeatherDailyModel(WeatherCommon *wcommon, QAbstractListModel *parent = nullptr);
     virtual ~WeatherDailyModel() {}
-
-    void setCoordinates(const QGeoCoordinate &coordinate);
 
     QString cityName() const;
     QString countryID() const;
@@ -55,7 +54,6 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE void setUpdateInterval(int updateInterval);
     int daysNumber() const;
-    int getTimezoneOffset() const;
 
 signals:
     void cityNameChanged(QString cityName);
@@ -70,11 +68,9 @@ public slots:
     void requestWeatherUpdate();
     void setCityName(QString cityName);
     void setCountryID(QString countryID);
-    void setTimezoneOffset(int TimezoneOffset);
 
 private:
     QNetworkAccessManager _nam;
-    QGeoCoordinate m_coordinate;
     qint64 _lastTs;
     QString m_cityName;
     QString m_countryID;
@@ -82,7 +78,7 @@ private:
     QTimer _updateTimer;
     int _updateInterval;
     int m_daysNumber;
-    int m_TimezoneOffset;
+    WeatherCommon *m_wcommon;
 };
 
 #endif // WEATHERDAILYMODEL_H
