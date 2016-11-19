@@ -8,6 +8,7 @@
 #include "weathermodel.h"
 #include "weatherdailymodel.h"
 #include "systemtrayicon.h"
+#include "settings.h"
 
 int main(int argc, char *argv[])
 {
@@ -33,6 +34,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
+    Settings settings;
     SystemTrayIcon *trayIcon = new SystemTrayIcon(engine.rootContext());
     trayIcon->setIcon(QIcon(":/qml/images/app.png"));
     trayIcon->show();
@@ -41,6 +43,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("browserCoordinate", &gbl);
     engine.rootContext()->setContextProperty("weatherModel", &wModel);
     engine.rootContext()->setContextProperty("weatherDailyModel", &wDailyModel);
+    engine.rootContext()->setContextProperty("settings", &settings);
     engine.load(QUrl(QLatin1String("qrc:/qml/main.qml")));
 
     return app.exec();

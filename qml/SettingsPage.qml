@@ -40,16 +40,9 @@ Item {
             color: "#999999"
             font.pixelSize: 14
         }
-        TextField {
+        EditableCombo {
             width: parent.width
-            text: weatherModel.cityName + ", " + weatherModel.countryID
-            font.pixelSize: 16
-            background: Rectangle {
-                width: parent.width
-                height: 2
-                y: parent.height - 2
-                color: "#999999"
-            }
+            editableText: weatherModel.cityName + ", " + weatherModel.countryID
         }
 
         Row {
@@ -112,6 +105,8 @@ Item {
                     weatherCommon.runAtStartup = startup.checked
                     weatherCommon.showAnimation = anim.checked
                     weatherCommon.tempScale = fahr.checked ? WeatherCommon.Fahrenheit : WeatherCommon.Celsium
+                    waiwedItem.menuButton.state = "menu"
+                    weatherCommon.requestWeatherUpdate()
                 }
             }
             SettingsButton {

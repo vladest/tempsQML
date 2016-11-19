@@ -8,14 +8,15 @@ ApplicationWindow {
     width: 280
     height: 480
     title: qsTr("tempsQML")
-    property alias backgr: swipeView.background
+    property alias backgr: mainView.background
+    property alias mainView: mainView
 
     //store items, pushed to StackView
     property Item itemSettings: null
     property Item itemMain: null
 
     StackView {
-        id: swipeView
+        id: mainView
         padding: 0
         anchors.fill: parent
         initialItem: mainComponent
@@ -33,13 +34,18 @@ ApplicationWindow {
         }
 
         background: WaiwedItem {
-            onSettingsClicked: {
-                if (swipeView.currentItem === itemSettings) {
-                    backgr.yPage = 300
-                    swipeView.pop()
-                } else {
-                    backgr.yPage = 100
-                    itemSettings = swipeView.push(settings)
+            id: waiwedItem
+            Connections {
+                target: waiwedItem.menuButton
+                onStateChanged: {
+                    //if (mainView.currentItem === itemSettings) {
+                    if (waiwedItem.menuButton.state === "menu") {
+                        backgr.yPage = 300
+                        mainView.pop()
+                    } else {
+                        backgr.yPage = 100
+                        itemSettings = mainView.push(settings)
+                    }
                 }
             }
         }

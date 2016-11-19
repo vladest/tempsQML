@@ -171,5 +171,6 @@
         <file>qml/SettingsButton.qml</file>
         <file>qml/SettingsCheck.qml</file>
         <file>qml/SettingsRadio.qml</file>
+        <file>qml/EditableCombo.qml</file>
     </qresource>
 </RCC>

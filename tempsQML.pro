@@ -45,4 +45,5 @@ HEADERS += \
     src/weatherdata.h \
     src/weatherdailymodel.h \
     src/systemtrayicon.h \
-    src/weathercommon.h
+    src/weathercommon.h \
+    src/settings.h

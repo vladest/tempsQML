@@ -7,6 +7,7 @@ Rectangle {
     property real yPage: 0
     color: weatherCommon.backgroundColor
     signal settingsClicked
+    property alias menuButton: menu
     state: "none"
 
     //flash effect
@@ -152,8 +153,8 @@ Rectangle {
         y: root.yPage - 40// + sourceSize.height
         source: "images/background.png"
         Behavior on y { PropertyAnimation { duration: 630 } }
-        //onYChanged: console.log(y)
     }
+
     Rectangle {
         color: "white"
         width: parent.width
