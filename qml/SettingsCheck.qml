@@ -16,6 +16,6 @@ CheckBox {
         font: control.font
         opacity: enabled ? 1.0 : 0.3
         color: "#999999"
-        leftPadding: control.leftPadding
+        leftPadding: control.leftPadding + indicator.width + 10
     }
 }

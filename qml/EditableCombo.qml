@@ -35,7 +35,7 @@ Item {
             if (val === undefined || val === "")
                 break;
             i++
-            citiesModel.addString(val)
+            citiesModel.append({ city: val });
         } while(true);
     }
 
@@ -63,6 +63,7 @@ Item {
             padding: 2
             text: combo.displayText
             font: combo.font
+            rightPadding: 40
             //color: "#ffffff"
             onTextChanged: {
                 findTimer.restart()
@@ -70,11 +71,44 @@ Item {
             Keys.onReturnPressed: {
                 enterPressed()
             }
-            background: Rectangle {
-                width: parent.width
-                height: 2
-                y: parent.height - 2
-                color: "#999999"
+            background: Item {
+                Rectangle {
+                    width: parent.width
+                    height: 2
+                    y: parent.height - 2
+                    color: "#999999"
+                }
+                Button {
+                    id: button
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: fav.left
+                    width: 20; height: 20;
+                    background: PartialImage {
+                        width: 20; height: 20;
+                        imageOffsetX: -120
+                        scale: button.pressed ? 0.80 : 1
+                    }
+                }
+
+                CheckBox {
+                    id: fav
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    width: 20; height: 20;
+                    indicator: PartialImage {
+                        width: 20; height: 20;
+                        imageOffsetX: fav.checked ? -100 : -80
+                    }
+                    onCheckedChanged: {
+                        if (checked) {
+                            citiesModel.append({ city: textField.text });
+                            //makes sur its selected by ComboBox
+                            combo.currentIndex = citiesModel.count - 1
+                        } else {
+                            citiesModel.remove(combo.currentIndex, 1)
+                        }
+                    }
+                }
             }
         }
         Component.onCompleted: contentItem.width = width - 40
