@@ -115,6 +115,9 @@ private:
     QList<WeatherData*> m_days;
     friend class SortFilterProxyModel;
     WeatherData* m_currentWeather;
+
+    QNetworkReply *replyForecast;
+    QNetworkReply *replyCurrent;
 };
 
 

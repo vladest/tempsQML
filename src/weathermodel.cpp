@@ -15,6 +15,8 @@ WeatherModel::WeatherModel(WeatherCommon *wcommon, QAbstractListModel *parent): 
   , _updateInterval(-1)
   , m_daysNumber(0)
   , m_currentWeather(new WeatherData)
+  , replyForecast(nullptr)
+  , replyCurrent(nullptr)
 {
     QQmlEngine::setObjectOwnership(m_currentWeather, QQmlEngine::CppOwnership);
     connect(&_updateTimer, &QTimer::timeout, this, &WeatherModel::requestWeatherUpdate);
@@ -31,6 +33,10 @@ void WeatherModel::requestWeatherUpdate()
     QUrl forecasturl;
     QUrl currentturl;
 
+    if (replyCurrent)
+        replyCurrent->abort();
+    if (replyForecast)
+        replyForecast->abort();
     if (m_wcommon->getSearchCriteria() == WeatherCommon::Coordinates) {
         const QGeoCoordinate &coord = m_wcommon->getCoordinate();
         forecasturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherForecastUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
@@ -42,12 +48,12 @@ void WeatherModel::requestWeatherUpdate()
 
     QNetworkRequest req = QNetworkRequest(forecasturl);
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-    QNetworkReply *replyForecast = _nam.get(req);
+    replyForecast = _nam.get(req);
     connect(replyForecast, &QNetworkReply::finished, this, &WeatherModel::onWeatherForecastRequestFinished);
     QNetworkRequest req1 = QNetworkRequest(currentturl);
     req1.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
 
-    QNetworkReply *replyCurrent = _nam.get(req1);
+    replyCurrent = _nam.get(req1);
     connect(replyCurrent, &QNetworkReply::finished, this, &WeatherModel::onWeatherCurrentRequestFinished);
 }
 
@@ -270,7 +276,10 @@ void WeatherModel::onWeatherCurrentRequestFinished()
         }
         m_wcommon->setBackgroundColor(m_currentWeather->temp());
         emit currentWeatherChanged(m_currentWeather);
+    } else {
+        m_wcommon->setBackgroundColor(0.0f);
     }
+    replyCurrent = nullptr;
 }
 
 void WeatherModel::onWeatherForecastRequestFinished()
@@ -356,7 +365,9 @@ void WeatherModel::onWeatherForecastRequestFinished()
         }
     } else {
         qDebug() << "Failure" <<reply->errorString();
+        m_wcommon->setBackgroundColor(0.0f);
     }
+    replyForecast = nullptr;
 }
 
 void WeatherModel::setUpdateInterval(int updateInterval)

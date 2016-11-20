@@ -58,6 +58,8 @@ void WeatherCommon::setBackgroundColor(qreal temp)
         index = 7;
     } else if (temp_c > 2) {
         index = 8;
+    } else if (temp_c < 273) { ///error
+        index = 0;
     }
 
     m_backgroundColor = _colorsTable.at(index);

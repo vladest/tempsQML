@@ -16,6 +16,7 @@ WeatherDailyModel::WeatherDailyModel(WeatherCommon *wcommon, QAbstractListModel 
   , _updateInterval(-1)
   , m_daysNumber(0)
   , m_wcommon(wcommon)
+  , replyDaily(nullptr)
 {
     connect(&_updateTimer, &QTimer::timeout, this, &WeatherDailyModel::requestWeatherUpdate);
     connect(wcommon, &WeatherCommon::requestWeatherUpdate, this, &WeatherDailyModel::requestWeatherUpdate);
@@ -26,6 +27,8 @@ void WeatherDailyModel::requestWeatherUpdate()
 {
     QUrl dailyurl;
 
+    if (replyDaily)
+        replyDaily->abort();
     if (m_wcommon->getSearchCriteria() == WeatherCommon::Coordinates) {
         const QGeoCoordinate &coord = m_wcommon->getCoordinate();
         dailyurl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherDailyUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
@@ -214,7 +217,9 @@ void WeatherDailyModel::onWeatherDailyRequestFinished()
         endResetModel();
     } else {
         qDebug() << "Error requestin daily weather data" << reply->error() << reply->url();
+        m_wcommon->setBackgroundColor(0.0f);
     }
+    replyDaily = nullptr;
 }
 
 void WeatherDailyModel::setUpdateInterval(int updateInterval)

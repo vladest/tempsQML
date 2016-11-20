@@ -80,7 +80,7 @@ private:
     int _updateInterval;
     int m_daysNumber;
     WeatherCommon *m_wcommon;
-
+    QNetworkReply *replyDaily;
 };
 
 #endif // WEATHERDAILYMODEL_H
