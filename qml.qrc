@@ -172,5 +172,6 @@
         <file>qml/SettingsCheck.qml</file>
         <file>qml/SettingsRadio.qml</file>
         <file>qml/EditableCombo.qml</file>
+        <file>qml/PartialImage.qml</file>
     </qresource>
 </RCC>
