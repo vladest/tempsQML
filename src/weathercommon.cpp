@@ -20,8 +20,8 @@ WeatherCommon::WeatherCommon(QObject *parent) : QObject(parent)
   , m_menuBarWeather(true)
   , m_runAtStartup(true)
   , m_tempScale(Celsium)
+  , m_searchCriteria(WeatherCommon::Coordinates)
 {
-
     setTempScale((TemperatureScales)settings.value("temp_scale", Celsium).toInt());
     setMenuBarWeather(settings.value("sys_tray", true).toBool());
     setRunAtStartup(settings.value("run_startup", true).toBool());
@@ -149,6 +149,33 @@ void WeatherCommon::setRunAtStartup(bool runAtStartup)
     m_runAtStartup = runAtStartup;
     emit runAtStartupChanged(runAtStartup);
     settings.setValue("run_startup", runAtStartup);
+}
+
+void WeatherCommon::search(const QString &city)
+{
+    if (!city.isEmpty()) {
+        m_searchCity = city;
+        m_searchCriteria = CityName;
+        emit requestWeatherUpdate();
+    }
+}
+
+void WeatherCommon::search()
+{
+    if (m_coordinate.isValid()) {
+        m_searchCriteria = Coordinates;
+        emit requestWeatherUpdate();
+    }
+}
+
+QString WeatherCommon::getSearchCity() const
+{
+    return m_searchCity;
+}
+
+WeatherCommon::SearchCriteria WeatherCommon::getSearchCriteria() const
+{
+    return m_searchCriteria;
 }
 
 QGeoCoordinate WeatherCommon::getCoordinate() const

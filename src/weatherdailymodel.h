@@ -54,6 +54,7 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE void setUpdateInterval(int updateInterval);
     int daysNumber() const;
+    void setSearchCriteria(const WeatherCommon::SearchCriteria &searchCriteria);
 
 signals:
     void cityNameChanged(QString cityName);
@@ -79,6 +80,7 @@ private:
     int _updateInterval;
     int m_daysNumber;
     WeatherCommon *m_wcommon;
+
 };
 
 #endif // WEATHERDAILYMODEL_H

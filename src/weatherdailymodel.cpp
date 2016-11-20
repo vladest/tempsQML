@@ -24,8 +24,14 @@ WeatherDailyModel::WeatherDailyModel(WeatherCommon *wcommon, QAbstractListModel 
 
 void WeatherDailyModel::requestWeatherUpdate()
 {
-    const QGeoCoordinate &coord = m_wcommon->getCoordinate();
-    QUrl dailyurl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherDailyUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
+    QUrl dailyurl;
+
+    if (m_wcommon->getSearchCriteria() == WeatherCommon::Coordinates) {
+        const QGeoCoordinate &coord = m_wcommon->getCoordinate();
+        dailyurl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherDailyUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
+    } else {
+        dailyurl = QUrl(QString("%1q=%2%3").arg(weatherDailyUrl).arg(m_wcommon->getSearchCity()).arg(appID));
+    }
     QNetworkRequest req = QNetworkRequest(dailyurl);
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     QNetworkReply *replyDaily = _nam.get(QNetworkRequest(req));

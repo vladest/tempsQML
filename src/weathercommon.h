@@ -28,6 +28,13 @@ public:
 
     Q_ENUM(TemperatureScales)
 
+    enum SearchCriteria {
+        Coordinates,
+        CityName
+    };
+
+    Q_ENUM(SearchCriteria)
+
     Q_INVOKABLE static qreal kelvin2celsius(qreal kelvin) { return (kelvin - 273.15); }
     Q_INVOKABLE static qreal kelvin2fahrenheit(qreal kelvin) { return (kelvin * (9.0/5.0) - 459.67); }
     Q_INVOKABLE static int roundup(qreal value) { return qRound(value); }
@@ -48,6 +55,10 @@ public:
 
     QGeoCoordinate getCoordinate() const;
 
+    WeatherCommon::SearchCriteria getSearchCriteria() const;
+
+    QString getSearchCity() const;
+
 signals:
     void backgroundColorChanged(QColor backgroundColor);
     void temperatureScaleChanged(QString temperatureScale);
@@ -65,6 +76,9 @@ public slots:
     void setMenuBarWeather(bool menuBarWeather);
     void setRunAtStartup(bool runAtStartup);
 
+    void search(const QString &city);
+    void search();
+
 private:
     QGeoCoordinate m_coordinate;
     QColor m_backgroundColor;
@@ -75,7 +89,8 @@ private:
     bool m_runAtStartup;
     TemperatureScales m_tempScale;
     QSettings settings;
-
+    WeatherCommon::SearchCriteria m_searchCriteria;
+    QString m_searchCity;
 };
 
 #endif // WEATHERCOMMON_H

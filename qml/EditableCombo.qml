@@ -88,6 +88,9 @@ Item {
                         imageOffsetX: -120
                         scale: button.pressed ? 0.80 : 1
                     }
+                    onClicked: {
+
+                    }
                 }
 
                 CheckBox {

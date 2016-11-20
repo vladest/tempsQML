@@ -28,9 +28,17 @@ WeatherModel::~WeatherModel() {
 
 void WeatherModel::requestWeatherUpdate()
 {
-    const QGeoCoordinate &coord = m_wcommon->getCoordinate();
-    QUrl forecasturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherForecastUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
-    QUrl currentturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherCurrentUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
+    QUrl forecasturl;
+    QUrl currentturl;
+
+    if (m_wcommon->getSearchCriteria() == WeatherCommon::Coordinates) {
+        const QGeoCoordinate &coord = m_wcommon->getCoordinate();
+        forecasturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherForecastUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
+        currentturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherCurrentUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
+    } else {
+        forecasturl = QUrl(QString("%1q=%2%3").arg(weatherForecastUrl).arg(m_wcommon->getSearchCity()).arg(appID));
+        currentturl = QUrl(QString("%1q=%2%3").arg(weatherCurrentUrl).arg(m_wcommon->getSearchCity()).arg(appID));
+    }
 
     QNetworkRequest req = QNetworkRequest(forecasturl);
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
