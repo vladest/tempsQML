@@ -246,6 +246,14 @@ void WeatherModel::onWeatherCurrentRequestFinished()
         QJsonDocument  jsonDoc = QJsonDocument::fromJson(arr);
 
         QJsonObject obj = jsonDoc.object();
+
+        int cod = obj.value("cod").toInt();
+        if (cod != 200) {
+            emit m_wcommon->weatherDownloadError(WeatherCommon::Current, cod);
+            replyCurrent = nullptr;
+            return;
+        }
+
         m_currentWeather->set_timestamp(QDateTime::fromTime_t(obj.value("dt").toInt(), Qt::UTC, m_wcommon->getTimezoneOffset()));
         //wData->set_timestamp(QDateTime::fromString(wData->timestamp_string(), "yyyy-MM-dd HH:mm:ss"));
         QJsonObject mainObj = obj.value("main").toObject();
@@ -278,6 +286,7 @@ void WeatherModel::onWeatherCurrentRequestFinished()
         emit currentWeatherChanged(m_currentWeather);
     } else {
         m_wcommon->setBackgroundColor(0.0f);
+        emit m_wcommon->weatherDownloadError(WeatherCommon::Current, reply->error());
     }
     replyCurrent = nullptr;
 }
@@ -291,6 +300,14 @@ void WeatherModel::onWeatherForecastRequestFinished()
         QJsonDocument  jsonDoc = QJsonDocument::fromJson(arr);
 
         QJsonObject obj = jsonDoc.object();
+
+        int cod = obj.value("cod").toString().toInt();
+        if (cod != 200) {
+            qDebug() << "Forecast request failure" << cod;
+            emit m_wcommon->weatherDownloadError(WeatherCommon::Forecast, cod);
+            replyForecast = nullptr;
+            return;
+        }
 
         QJsonObject cityObj = obj.value("city").toObject();
         if (!cityObj.isEmpty()) {
@@ -364,7 +381,8 @@ void WeatherModel::onWeatherForecastRequestFinished()
             setDaysNumber(_avgdays.size());
         }
     } else {
-        qDebug() << "Failure" <<reply->errorString();
+        emit m_wcommon->weatherDownloadError(WeatherCommon::Forecast, reply->error());
+        qDebug() << "Forecast request failure" <<reply->error();
         m_wcommon->setBackgroundColor(0.0f);
     }
     replyForecast = nullptr;

@@ -168,6 +168,15 @@ void WeatherDailyModel::onWeatherDailyRequestFinished()
         QJsonDocument  jsonDoc = QJsonDocument::fromJson(arr);
 
         QJsonObject obj = jsonDoc.object();
+
+        int cod = obj.value("cod").toString().toInt();
+        if (cod != 200) {
+            qDebug() << "Error requestin daily weather data" << cod << reply->url();
+            emit m_wcommon->weatherDownloadError(WeatherCommon::Daily, cod);
+            replyDaily = nullptr;
+            return;
+        }
+
         QJsonArray weatherList = obj.value("list").toArray();
         beginResetModel();
         qDeleteAll(m_dailyList);
@@ -217,6 +226,7 @@ void WeatherDailyModel::onWeatherDailyRequestFinished()
         endResetModel();
     } else {
         qDebug() << "Error requestin daily weather data" << reply->error() << reply->url();
+        emit m_wcommon->weatherDownloadError(WeatherCommon::Daily, reply->error());
         m_wcommon->setBackgroundColor(0.0f);
     }
     replyDaily = nullptr;

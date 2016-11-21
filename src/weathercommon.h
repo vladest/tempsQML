@@ -25,15 +25,20 @@ public:
         Celsium,
         Fahrenheit
     };
-
     Q_ENUM(TemperatureScales)
 
     enum SearchCriteria {
         Coordinates,
         CityName
     };
-
     Q_ENUM(SearchCriteria)
+
+    enum WeatherType {
+        Current,
+        Daily,
+        Forecast
+    };
+    Q_ENUM(WeatherType)
 
     Q_INVOKABLE static qreal kelvin2celsius(qreal kelvin) { return (kelvin - 273.15); }
     Q_INVOKABLE static qreal kelvin2fahrenheit(qreal kelvin) { return (kelvin * (9.0/5.0) - 459.67); }
@@ -67,6 +72,7 @@ signals:
     void runAtStartupChanged(bool runAtStartup);
     void tempScaleChanged(TemperatureScales tempScale);
     void requestWeatherUpdate();
+    void weatherDownloadError(WeatherType weatherType, int weatherError);
 
 public slots:
     void setCoordinates(const QGeoCoordinate &coordinate);
