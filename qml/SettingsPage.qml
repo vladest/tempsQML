@@ -43,6 +43,9 @@ Item {
         EditableCombo {
             width: parent.width
             editableText: weatherModel.cityName + ", " + weatherModel.countryID
+            onEnterPressed: {
+                weatherCommon.search(editableText)
+            }
         }
 
         Row {
