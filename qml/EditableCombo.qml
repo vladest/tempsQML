@@ -59,7 +59,7 @@ Item {
         interval: searchDelay
         onTriggered: {
             var ind = combo.find(combo.contentItem.text, followSearchFlags)
-            fav.checked = (ind !== -1)
+            fav.checkState = (ind !== -1) ? Qt.Checked : Qt.Unchecked
         }
     }
 
