@@ -46,34 +46,37 @@ Rectangle {
                                        weatherModel.currentWeather.weather_codition_description
                                        + " " + weatherCommon.roundup(weatherCommon.convertToCurrentScale(weatherModel.currentWeather.temp))
                                        + "\u00B0" + weatherCommon.temperatureScale, 0, 3000)
-            if (weatherModel.currentWeather.weather_codition_name === 'Rain') {
-                if (weatherModel.currentWeather.weather_codition_description.indexOf('light') !== -1) {
-                    rainEmitter.emitRate = 5
-                } else if (weatherModel.currentWeather.weather_codition_description.indexOf('heavy') !== -1) {
-                    rainEmitter.emitRate = 20
-                } else {
-                    rainEmitter.emitRate = 10
-                }
-                root.state = "rain"
-            } else if (weatherModel.currentWeather.weather_codition_name === 'Snow') {
-                snowEmitter.emitRate = 10
-                root.state = "snow"
-            }
-            else {
+            if (weatherCommon.showAnimation === false) {
                 root.state = "none"
+            } else {
+                if (weatherModel.currentWeather.weather_codition_description.indexOf('rain') !== -1) {
+                    if (weatherModel.currentWeather.weather_codition_description.indexOf('light') !== -1) {
+                        rainEmitter.emitRate = 5
+                    } else if (weatherModel.currentWeather.weather_codition_description.indexOf('heavy') !== -1) {
+                        rainEmitter.emitRate = 20
+                    } else {
+                        rainEmitter.emitRate = 10
+                    }
+                    root.state = "rain"
+                } else if (weatherModel.currentWeather.weather_codition_name === 'Snow') {
+                    snowEmitter.emitRate = 10
+                    root.state = "snow"
+                } else {
+                    root.state = "none"
+                }
             }
         }
     }
 
     ParticleSystem {
         id: sysRain
-        running: root.state === "rain"
+        running: root.state === "rain" //&& weatherCommon.showAnimation
     }
 
     Emitter {
         id: rainEmitter
         system: sysRain
-        emitRate: 10
+        emitRate: weatherCommon.showAnimation ? 10 : 0
         lifeSpan: 2000
         velocity: AngleDirection {angle: 90; magnitude: 500;}
         width: parent.width
@@ -82,13 +85,13 @@ Rectangle {
 
     ParticleSystem {
         id: sysSnow
-        running: root.state === "snow"
+        running: root.state === "snow" //&& weatherCommon.showAnimation
     }
 
     Emitter {
         id: snowEmitter
         system: sysSnow
-        emitRate: 20
+        emitRate: weatherCommon.showAnimation ? 20 : 0
         lifeSpan: 5000
         //snow flakes slower than rain drops
         velocity: AngleDirection {angle: 90; magnitude: 50;}
