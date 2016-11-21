@@ -5,7 +5,7 @@ Item {
     id: root
 
     property int followSearchFlags: Qt.MatchContains
-    property int searchDelay: 400
+    property int searchDelay: 100
     property alias interval: findTimer.interval
     property alias textRole: combo.textRole
     property alias currentIndex: combo.currentIndex
@@ -33,22 +33,26 @@ Item {
     }
 
     function saveCities() {
+        settings.setValue("", "", "cities"); // clear group
         for (var i = 0; i < citiesModel.count; i++) {
             var city = citiesModel.get(i).city
-            if (city !== "")
+            if (city !== "") {
                 settings.setValue(i, city , "cities");
+            }
         }
     }
 
-    function addCity(cityName) {
-        var found = false
+    function searchCity(cityName) {
         for (var i = 0; i < citiesModel.count; i++) {
             if (cityName === citiesModel.get(i).city) {
-                found = true
-                break
+                return true
             }
         }
-        if (found === false) {
+        return false
+    }
+
+    function addCity(cityName) {
+        if (searchCity(cityName) === false) {
             citiesModel.append({ city: cityName });
         }
     }
@@ -58,8 +62,7 @@ Item {
         repeat: false
         interval: searchDelay
         onTriggered: {
-            var ind = combo.find(combo.contentItem.text, followSearchFlags)
-            fav.checkState = (ind !== -1) ? Qt.Checked : Qt.Unchecked
+            fav.checkState = searchCity(textField.text) ? Qt.Checked : Qt.Unchecked
         }
     }
 
@@ -125,6 +128,7 @@ Item {
                             //makes sur its selected by ComboBox
                             combo.currentIndex = citiesModel.count - 1
                         } else {
+                            console.log("remove index", combo.currentIndex)
                             citiesModel.remove(combo.currentIndex, 1)
                         }
                     }
