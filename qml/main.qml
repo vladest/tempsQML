@@ -44,14 +44,14 @@ ApplicationWindow {
                         mainView.pop()
                     } else {
                         backgr.yPage = 100
-                        itemSettings = mainView.push(settings)
+                        itemSettings = mainView.push(settingsComponent)
                     }
                 }
             }
         }
     }
     Component {
-        id: settings
+        id: settingsComponent
         SettingsPage {
         }
     }

@@ -13,7 +13,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QCoreApplication::setApplicationName("tempQML");
+    QCoreApplication::setApplicationName("tempsQML");
     QCoreApplication::setOrganizationName("vladest");
     QCoreApplication::setOrganizationDomain("vladest.org");
 

@@ -4,6 +4,14 @@ import weathermodel 1.0
 
 Item {
 
+    StackView.onStatusChanged: {
+        if (StackView.status === StackView.Activating) {
+            cityEdit.loadCities()
+        } else if (StackView.status === StackView.Deactivating) {
+            cityEdit.saveCities()
+        }
+    }
+
     Column {
         width: parent.width - 20
         anchors.horizontalCenter: parent.horizontalCenter
@@ -41,6 +49,7 @@ Item {
             font.pixelSize: 14
         }
         EditableCombo {
+            id: cityEdit
             width: parent.width
             editableText: weatherModel.cityName + ", " + weatherModel.countryID
             onEnterPressed: {

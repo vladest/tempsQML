@@ -16,27 +16,41 @@ Item {
     signal enterPressed()
     height: combo.height
 
-    Component.onDestruction: {
-        for (var i = 1; i < citiesModel.count; i++) {
-            var city = citiesModel.get(i).display
-            if (city !== "")
-                settings.setValue(i, city , "cities");
-        }
-    }
-
     ListModel {
         id: citiesModel
     }
 
-    function loadSearchStrings() {
-        var i = 1
+    function loadCities() {
+        var i = 0
         do {
             var val = settings.value(i,"", "cities");
             if (val === undefined || val === "")
                 break;
             i++
+            console.log("appending city", val)
             citiesModel.append({ city: val });
         } while(true);
+    }
+
+    function saveCities() {
+        for (var i = 0; i < citiesModel.count; i++) {
+            var city = citiesModel.get(i).city
+            if (city !== "")
+                settings.setValue(i, city , "cities");
+        }
+    }
+
+    function addCity(cityName) {
+        var found = false
+        for (var i = 0; i < citiesModel.count; i++) {
+            if (cityName === citiesModel.get(i).city) {
+                found = true
+                break
+            }
+        }
+        if (found === false) {
+            citiesModel.append({ city: cityName });
+        }
     }
 
     Timer {
@@ -45,8 +59,7 @@ Item {
         interval: searchDelay
         onTriggered: {
             var ind = combo.find(combo.contentItem.text, followSearchFlags)
-            if (ind !== -1)
-                combo.currentIndex = ind
+            fav.checked = (ind !== -1)
         }
     }
 
@@ -58,10 +71,14 @@ Item {
         padding: 2
         rightPadding: 2
         flat: true
+        onCurrentIndexChanged: {
+            textField.text = citiesModel.get(currentIndex).city
+            weatherCommon.search(textField.text)
+        }
         contentItem: TextField {
             id: textField
             padding: 2
-            text: combo.displayText
+            text: combo.currentText
             font: combo.font
             rightPadding: 40
             //color: "#ffffff"
@@ -104,7 +121,7 @@ Item {
                     }
                     onCheckedChanged: {
                         if (checked) {
-                            citiesModel.append({ city: textField.text });
+                            addCity(textField.text)
                             //makes sur its selected by ComboBox
                             combo.currentIndex = citiesModel.count - 1
                         } else {
