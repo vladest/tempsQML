@@ -3,6 +3,7 @@ import QtGraphicalEffects 1.0
 
 Item {
     width: ListView.view.width / 4
+    height: col.implicitHeight
 
     Rectangle {
         id: border
@@ -18,6 +19,7 @@ Item {
         width: parent.width - 2
         height: parent.height
         spacing: 1
+
         Text {
             width: parent.width
             color: "#999999"
@@ -85,4 +87,9 @@ Item {
         //        verticalAlignment: Text.AlignVCenter
         //    }
     }
+
 }
+
+
+
+

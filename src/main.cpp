@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
     WeatherCommon wcmn;
     WeatherModel wModel(&wcmn);
     WeatherDailyModel wDailyModel(&wcmn);
+    SortFilterProxyModel filteredWeatherModel;
+
+    filteredWeatherModel.setSourceModel(&wModel);
 
     QObject::connect(&gbl, &GoogleBrowserLocation::browserCoordinateChanged, &wcmn, &WeatherCommon::setCoordinates);
     QObject::connect(&gbl, &GoogleBrowserLocation::tzoffsetChanged, &wcmn, &WeatherCommon::setTimezoneOffset);
@@ -43,7 +46,9 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("browserCoordinate", &gbl);
     engine.rootContext()->setContextProperty("weatherModel", &wModel);
     engine.rootContext()->setContextProperty("weatherDailyModel", &wDailyModel);
+    engine.rootContext()->setContextProperty("filteredWeatherModel", &filteredWeatherModel);
     engine.rootContext()->setContextProperty("settings", &settings);
+
     engine.load(QUrl(QLatin1String("qrc:/qml/main.qml")));
 
     return app.exec();

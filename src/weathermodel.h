@@ -14,16 +14,27 @@ class SortFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
+
 public:
     explicit SortFilterProxyModel(QObject *parent = 0);
 
     Q_INVOKABLE void setWeatherDateIndex(int weatherIndex);
+
+    int count() const;
+
+public slots:
+    void setCount(int count);
+
+signals:
+    void countChanged(int count);
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
 private:
     int _weatherDateIndex;
+    int m_count;
 };
 
 //TODO: subclass from WeatherDailyModel

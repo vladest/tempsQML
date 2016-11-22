@@ -434,6 +434,18 @@ void SortFilterProxyModel::setWeatherDateIndex(int weatherIndex)
 {
     _weatherDateIndex = weatherIndex;
     invalidateFilter();
+    setCount(rowCount());
+}
+
+int SortFilterProxyModel::count() const
+{
+    return m_count;
+}
+
+void SortFilterProxyModel::setCount(int count)
+{
+    m_count = count;
+    emit countChanged(count);
 }
 
 bool SortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const {
