@@ -36,11 +36,10 @@ int main(int argc, char *argv[])
     QObject::connect(&gbl, &GoogleBrowserLocation::tzoffsetChanged, &wcmn, &WeatherCommon::setTimezoneOffset);
 
     QQmlApplicationEngine engine;
+    SystemTrayIcon *trayIcon = new SystemTrayIcon;
 
     Settings settings;
-    SystemTrayIcon *trayIcon = new SystemTrayIcon(engine.rootContext());
-    trayIcon->setIcon(QIcon(":/qml/images/app.png"));
-    trayIcon->show();
+
     engine.rootContext()->setContextProperty("weatherCommon", &wcmn);
     engine.rootContext()->setContextProperty("systemTrayIcon", trayIcon);
     engine.rootContext()->setContextProperty("browserCoordinate", &gbl);

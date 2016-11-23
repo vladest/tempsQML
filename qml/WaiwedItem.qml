@@ -39,14 +39,15 @@ Rectangle {
     Connections {
         target: weatherModel
         onCurrentWeatherChanged: {
-            systemTrayIcon.setNewIcon("icons/"+weatherModel.currentWeather.weather_codition_icon_id + ".svg")
-            systemTrayIcon.toolTip = weatherModel.currentWeather.weather_codition_description
-            systemTrayIcon.show()
-            systemTrayIcon.showMessage(weatherModel.currentWeather.weather_codition_name,
-                                       weatherModel.currentWeather.weather_codition_description
-                                       + " " + weatherCommon.roundup(weatherCommon.convertToCurrentScale(weatherModel.currentWeather.temp))
-                                       + "\u00B0" + weatherCommon.temperatureScale, 0, 3000)
-
+            if (systemTrayIcon.available) {
+                systemTrayIcon.setNewIcon("icons/"+weatherModel.currentWeather.weather_codition_icon_id + ".svg")
+                systemTrayIcon.toolTip = weatherModel.currentWeather.weather_codition_description
+                systemTrayIcon.show()
+                systemTrayIcon.showMessage(weatherModel.currentWeather.weather_codition_name,
+                                           weatherModel.currentWeather.weather_codition_description
+                                           + " " + weatherCommon.roundup(weatherCommon.convertToCurrentScale(weatherModel.currentWeather.temp))
+                                           + "\u00B0" + weatherCommon.temperatureScale, 0, 3000)
+            }
             if (weatherModel.currentWeather.weather_codition_description.indexOf('rain') !== -1) {
                 if (weatherModel.currentWeather.weather_codition_description.indexOf('light') !== -1) {
                     rainEmitter.emitRate = 5
