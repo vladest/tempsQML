@@ -101,25 +101,25 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            subdetails.showdetailsindex = index
-                            filteredWeatherModel.setWeatherDateIndex(index)
+                            if (index >= 0 && index < weatherModel.daysNumber) {
+                                subdetails.showdetailsindex = index
+                                filteredWeatherModel.setWeatherDateIndex(index)
+                            }
                         }
                     }
                 }
             }
 
+
+            //delegate model used as a proxy to extract filtered data
             DelegateModel {
                 id: visualModel
                 model: filteredWeatherModel
-                delegate: XYPoint {
-                    x: index
-                    y: weatherCommon.roundup(weatherCommon.convertToCurrentScale(temp))
-                }
+                delegate: Item {}
                 onCountChanged: {
-                    console.log("filtered count", count)
+                    //console.log("filtered count", count)
                     if (count > 0) {
-                        console.log("points", graphPoints)
-                        tempsSeries.removePoints(0, graphPoints - 1)
+                        tempsSeries.removePoints(0, graphPoints)
                         valueAxisX.max = count - 1
                         var min = weatherCommon.roundup(weatherCommon.convertToCurrentScale(model.data(visualModel.modelIndex(0), 258)))
                         tempsSeries.append(0, min)
@@ -131,7 +131,7 @@ Item {
                                 max = val
                             else if (val < min)
                                 min = val
-                            console.log(val)
+                            //console.log(val)
                         }
                         graphPoints = count
 
@@ -174,10 +174,11 @@ Item {
                     axisX: valueAxisX
                     axisY: valueAxisY
                     color: weatherCommon.backgroundColor
-                    pointsVisible: true
+                    pointsVisible: false
                     useOpenGL: true
 
                     onHovered: {
+                        pointsVisible = state
                         console.log(point, state)
                     }
                 }
@@ -187,7 +188,6 @@ Item {
                         subdetails.showdetailsindex = -1
                     }
                 }
-
             }
         }
     }
