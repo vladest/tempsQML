@@ -22,7 +22,8 @@ public:
             settings.beginGroup(group);
         if (key.isEmpty() && value.toString().isEmpty())
             settings.remove("");
-        settings.setValue(key, value);
+        else
+            settings.setValue(key, value);
         if (!group.isEmpty())
             settings.endGroup();
     }
