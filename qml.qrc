@@ -173,5 +173,6 @@
         <file>qml/SettingsRadio.qml</file>
         <file>qml/EditableCombo.qml</file>
         <file>qml/PartialImage.qml</file>
+        <file>qml/WeatherGraph.qml</file>
     </qresource>
 </RCC>

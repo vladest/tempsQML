@@ -1,11 +1,8 @@
 import QtQuick 2.5
-import QtCharts 2.2
-import QtQml.Models 2.2
 
 Item {
     id: root
 
-    property int graphPoints: 0
     Image {
         width: 80
         height: 80
@@ -14,6 +11,7 @@ Item {
                     "images/icons/IconTemplate@02d.png" :
                     "images/icons/" + weatherModel.currentWeather.weather_codition_icon_id + ".svg"
     }
+
     Column {
         height: 100
         anchors.horizontalCenter: parent.horizontalCenter
@@ -109,85 +107,9 @@ Item {
                     }
                 }
             }
-
-
-            //delegate model used as a proxy to extract filtered data
-            DelegateModel {
-                id: visualModel
-                model: filteredWeatherModel
-                delegate: Item {}
-                onCountChanged: {
-                    //console.log("filtered count", count)
-                    if (count > 0) {
-                        tempsSeries.removePoints(0, graphPoints)
-                        valueAxisX.max = count - 1
-                        var min = weatherCommon.roundup(weatherCommon.convertToCurrentScale(model.data(visualModel.modelIndex(0), 258)))
-                        tempsSeries.append(0, min)
-                        var max = min
-                        for (var i = 1; i < count; i++) {
-                            var val = weatherCommon.roundup(weatherCommon.convertToCurrentScale(model.data(visualModel.modelIndex(i), 258)))
-                            tempsSeries.append(i, val)
-                            if (val > max)
-                                max = val
-                            else if (val < min)
-                                min = val
-                            //console.log(val)
-                        }
-                        graphPoints = count
-
-                        valueAxisY.min = min - 1
-                        valueAxisY.max = max + 1
-                    }
-                }
-            }
-
-            ChartView {
-                visible: subdetails.showdetailsindex !== -1
+            WeatherGraph {
                 anchors.fill: parent
-                legend.visible: false
-                margins.bottom: 0
-                margins.top: 0
-                margins.left: 0
-                margins.right: 0
-                backgroundColor: "transparent"
-                antialiasing: true
-
-                ValueAxis {
-                    visible: false
-                    id: valueAxisX
-                    min: 0
-                    max: 1
-                }
-
-                ValueAxis{
-                    visible: false
-                    id: valueAxisY
-                    min: 0
-                    max: 5
-                }
-
-                SplineSeries {
-                    id: tempsSeries
-                    width: 4
-                    style: Qt.SolidLine
-                    capStyle: Qt.RoundCap
-                    axisX: valueAxisX
-                    axisY: valueAxisY
-                    color: weatherCommon.backgroundColor
-                    pointsVisible: false
-                    useOpenGL: true
-
-                    onHovered: {
-                        pointsVisible = state
-                        console.log(point, state)
-                    }
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        subdetails.showdetailsindex = -1
-                    }
-                }
+                visible: subdetails.showdetailsindex !== -1
             }
         }
     }
