@@ -1,5 +1,5 @@
-import QtQuick 2.5
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.0
 
 Item {
     id: root
@@ -73,7 +73,7 @@ Item {
         font.pixelSize: 16
         padding: 2
         rightPadding: 2
-        flat: true
+        //flat: true
         onCurrentIndexChanged: {
             textField.text = citiesModel.get(currentIndex).city
             weatherCommon.search(textField.text)

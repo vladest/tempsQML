@@ -9,6 +9,7 @@ Item {
         id: img
         height: parent.height
         width: parent.width
+        antialiasing: true
         visible: false
     }
     ColorOverlay {

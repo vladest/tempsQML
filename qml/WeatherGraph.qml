@@ -1,5 +1,5 @@
-import QtQuick 2.5
-import QtCharts 2.2
+import QtQuick 2.7
+import QtCharts 2.0
 import QtQml.Models 2.2
 
 Item {

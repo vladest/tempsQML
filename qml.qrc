@@ -174,5 +174,7 @@
         <file>qml/EditableCombo.qml</file>
         <file>qml/PartialImage.qml</file>
         <file>qml/WeatherGraph.qml</file>
+        <file>qml/WeatherMap.qml</file>
+        <file>qml/images/map.png</file>
     </qresource>
 </RCC>
