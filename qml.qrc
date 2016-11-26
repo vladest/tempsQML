@@ -176,5 +176,6 @@
         <file>qml/WeatherGraph.qml</file>
         <file>qml/WeatherMap.qml</file>
         <file>qml/images/map.png</file>
+        <file>qml/images/earth.svg</file>
     </qresource>
 </RCC>

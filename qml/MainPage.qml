@@ -13,18 +13,18 @@ Item {
                     "images/icons/" + weatherModel.currentWeather.weather_codition_icon_id + ".svg"
     }
 
-//    Button {
-//        width: 64
-//        height: 64
-//        anchors { top: parent.top; topMargin: parent.height * 0.14; right: parent.right; rightMargin: parent.width * 0.08; }
-//        background: ColoredImage {
-//            overlayColor: "white"
-//            source: "images/map.png"
-//        }
-//        onClicked: {
-//            mainView.push(mapComponent)
-//        }
-//    }
+    Button {
+        width: 20
+        height: 20
+        anchors { top: parent.top; topMargin: 40; left: parent.left; leftMargin: 10; }
+        background: ColoredImage {
+            overlayColor: "white"
+            source: "images/earth.svg"
+        }
+        onClicked: {
+            mainView.push(mapComponent)
+        }
+    }
     Column {
         height: 100
         anchors.horizontalCenter: parent.horizontalCenter

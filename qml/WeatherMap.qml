@@ -1,32 +1,21 @@
 import QtQuick 2.5
 import QtLocation 5.5
 import QtPositioning 5.5
+import QtQuick.Controls 2.0
 
 Item {
     property var centerCoordinate: browserCoordinate.browserCoordinate
     Map {
         id: baseMap
         anchors.fill: parent
-        center: centerCoordinate
+        center: weatherMap.center
         zoomLevel: weatherMap.zoomLevel
+        activeMapType: supportedMapTypes[0]
 
         plugin: Plugin {
-            id: herePlugin
             allowExperimental: true
-            name: "here"
+            name: "osm"
             locales: "en_EN"
-            PluginParameter {
-                name: "here.app_id"
-                value: ""
-            }
-            PluginParameter {
-                name: "here.token"
-                value: ""
-            }
-            PluginParameter {
-                name: "here.proxy"
-                value: "system"
-            }
         }
     }
     Map {
@@ -39,7 +28,7 @@ Item {
         gesture.enabled: true
         focus: true
         color: "transparent"
-        activeMapType: supportedMapTypes[2]
+        activeMapType: supportedMapTypes[0]
 
         plugin: Plugin {
             allowExperimental: true
@@ -51,5 +40,35 @@ Item {
             }
         }
     }
+    ListModel {
+        id: layersListModel
+    }
 
+    Row {
+        width: parent.width
+        anchors { left: parent.left; top: parent.top; margins: 10; right: parent.right }
+        z: 1000
+        spacing: 10
+        MenuClose {
+            state: "back"
+            height: 30
+            width: 30
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: mainView.pop()
+            }
+        }
+        ComboBox {
+            model: layersListModel
+            width: parent.width - 50
+            currentIndex: 0
+            onCurrentIndexChanged: weatherMap.activeMapType = weatherMap.supportedMapTypes[currentIndex]
+        }
+    }
+    Component.onCompleted: {
+        for (var i = 0; i < weatherMap.supportedMapTypes.length; i++) {
+            layersListModel.append({display: weatherMap.supportedMapTypes[i].name})
+        }
+    }
 }
