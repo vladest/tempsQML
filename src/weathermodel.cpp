@@ -165,15 +165,6 @@ void WeatherModel::setCountryID(QString countryID)
     emit countryIDChanged(countryID);
 }
 
-void WeatherModel::setDays(QList<WeatherData *> days)
-{
-    if (!m_days.isEmpty())
-        m_days.clear();
-
-    m_days = days;
-    emit daysChanged(days);
-}
-
 int WeatherModel::measuresForDate(const QDateTime &date) const
 {
     return m_forecastDates.values(date.date()).size();
@@ -369,17 +360,7 @@ void WeatherModel::onWeatherForecastRequestFinished()
 
         }
         endResetModel();
-        if (m_forecastList.size() > 0) {
-            QList<WeatherData*> _avgdays;
-            foreach(QDate  _dt, m_forecastDates.uniqueKeys()) {
-                const QList<WeatherData*> _weatherperday = m_forecastDates.values(_dt);
-                int avgweather = _weatherperday.size() / 2;
-                //qDebug() << "append avg weather for " << _dt << avgweather;
-                _avgdays.append(_weatherperday.at(avgweather));
-            }
-            setDays(_avgdays);
-            setDaysNumber(_avgdays.size());
-        }
+        setDaysNumber(m_forecastDates.uniqueKeys().size());
     } else {
         emit m_wcommon->weatherDownloadError(WeatherCommon::Forecast, reply->error());
         qDebug() << "Forecast request failure" <<reply->error();
@@ -408,23 +389,6 @@ WeatherData *WeatherModel::currentWeather() const
 {
     return m_currentWeather;
 }
-
-WeatherData *WeatherModel::getAverageWeather(int dayindex)
-{
-    if (dayindex >= 0 && m_days.size() > 0 && m_days.size() > dayindex)
-        return m_days.at(dayindex);
-    return Q_NULLPTR;
-}
-
-WeatherData *WeatherModel::getWeather(int day, int index)
-{
-    if (day < 0 || m_forecastDates.uniqueKeys().size() < 0 || m_forecastDates.uniqueKeys().size() <= day ||
-            m_forecastDates.values(m_forecastDates.uniqueKeys().at(day)).size() < 0 ||
-            m_forecastDates.values(m_forecastDates.uniqueKeys().at(day)).size() <= index)
-        return Q_NULLPTR;
-    return m_forecastDates.values(m_forecastDates.uniqueKeys().at(day)).at(index);
-}
-
 
 SortFilterProxyModel::SortFilterProxyModel(QObject *parent) :
     QSortFilterProxyModel(parent), _weatherDateIndex(-1) {

@@ -88,14 +88,10 @@ public:
     WeatherData *currentWeather() const;
 
 public slots:
-
     void requestWeatherUpdate();
-    WeatherData *getAverageWeather(int day);
-    WeatherData *getWeather(int day, int index);
 
     void setCityName(QString cityName);
     void setCountryID(QString countryID);
-    void setDays(QList<WeatherData*> days);
     int measuresForDate(const QDateTime &date) const;
     int measuresForDate(int index) const;
     void setCurrentWeather(WeatherData* currentWeather);
@@ -104,7 +100,6 @@ signals:
     void cityNameChanged(QString cityName);
     void countryIDChanged(QString countryID);
     void daysNumberChanged(int daysNumber);
-    void daysChanged(QList<WeatherData*> days);
     void currentWeatherChanged(WeatherData* currentWeather);
 
 private slots:
@@ -123,7 +118,6 @@ private:
     int _updateInterval;
     int m_daysNumber;
     QLocale _locale;
-    QList<WeatherData*> m_days;
     friend class SortFilterProxyModel;
     WeatherData* m_currentWeather;
 
