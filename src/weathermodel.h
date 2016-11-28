@@ -118,7 +118,7 @@ private:
     QString m_cityName;
     QString m_countryID;
     QVector<WeatherData *> m_forecastList;
-    QMap<QDate, WeatherData *> _forecastList;
+    QMap<QDate, WeatherData *> m_forecastDates;
     QTimer _updateTimer;
     int _updateInterval;
     int m_daysNumber;

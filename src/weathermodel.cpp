@@ -176,13 +176,13 @@ void WeatherModel::setDays(QList<WeatherData *> days)
 
 int WeatherModel::measuresForDate(const QDateTime &date) const
 {
-    return _forecastList.values(date.date()).size();
+    return m_forecastDates.values(date.date()).size();
 }
 
 int WeatherModel::measuresForDate(int index) const
 {
-    if (_forecastList.uniqueKeys().size() > 0 && _forecastList.uniqueKeys().size() > index)
-        return _forecastList.values(_forecastList.uniqueKeys().at(index)).size();
+    if (m_forecastDates.uniqueKeys().size() > 0 && m_forecastDates.uniqueKeys().size() > index)
+        return m_forecastDates.values(m_forecastDates.uniqueKeys().at(index)).size();
     else
         return 0;
 }
@@ -326,7 +326,7 @@ void WeatherModel::onWeatherForecastRequestFinished()
         beginResetModel();
         qDeleteAll(m_forecastList);
         m_forecastList.clear();
-        _forecastList.clear();
+        m_forecastDates.clear();
 
         foreach (const QJsonValue & value, weatherList) {
             QJsonObject obj1 = value.toObject();
@@ -363,7 +363,7 @@ void WeatherModel::onWeatherForecastRequestFinished()
                     wData->set_snow_3h(snowObj.value("3h").toDouble());
                 }
                 m_forecastList.append(wData);
-                _forecastList.insertMulti(wData->timestamp().date(), wData);
+                m_forecastDates.insertMulti(wData->timestamp().date(), wData);
                 //qDebug() << wData->dump();
             }
 
@@ -371,8 +371,8 @@ void WeatherModel::onWeatherForecastRequestFinished()
         endResetModel();
         if (m_forecastList.size() > 0) {
             QList<WeatherData*> _avgdays;
-            foreach(QDate  _dt, _forecastList.uniqueKeys()) {
-                const QList<WeatherData*> _weatherperday = _forecastList.values(_dt);
+            foreach(QDate  _dt, m_forecastDates.uniqueKeys()) {
+                const QList<WeatherData*> _weatherperday = m_forecastDates.values(_dt);
                 int avgweather = _weatherperday.size() / 2;
                 //qDebug() << "append avg weather for " << _dt << avgweather;
                 _avgdays.append(_weatherperday.at(avgweather));
@@ -418,11 +418,11 @@ WeatherData *WeatherModel::getAverageWeather(int dayindex)
 
 WeatherData *WeatherModel::getWeather(int day, int index)
 {
-    if (day < 0 || _forecastList.uniqueKeys().size() < 0 || _forecastList.uniqueKeys().size() <= day ||
-            _forecastList.values(_forecastList.uniqueKeys().at(day)).size() < 0 ||
-            _forecastList.values(_forecastList.uniqueKeys().at(day)).size() <= index)
+    if (day < 0 || m_forecastDates.uniqueKeys().size() < 0 || m_forecastDates.uniqueKeys().size() <= day ||
+            m_forecastDates.values(m_forecastDates.uniqueKeys().at(day)).size() < 0 ||
+            m_forecastDates.values(m_forecastDates.uniqueKeys().at(day)).size() <= index)
         return Q_NULLPTR;
-    return _forecastList.values(_forecastList.uniqueKeys().at(day)).at(index);
+    return m_forecastDates.values(m_forecastDates.uniqueKeys().at(day)).at(index);
 }
 
 
@@ -458,7 +458,7 @@ bool SortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &so
     if (wm == Q_NULLPTR)
         return true;
 
-    QDate date = wm->_forecastList.uniqueKeys().at(_weatherDateIndex);
-    return wm->_forecastList.values(date).contains(wm->m_forecastList.at(sourceRow));
+    QDate date = wm->m_forecastDates.uniqueKeys().at(_weatherDateIndex);
+    return wm->m_forecastDates.values(date).contains(wm->m_forecastList.at(sourceRow));
 }
 
