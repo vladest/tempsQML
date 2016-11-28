@@ -275,6 +275,7 @@ void WeatherModel::onWeatherCurrentRequestFinished()
         }
         m_wcommon->setBackgroundColor(m_currentWeather->temp());
         emit currentWeatherChanged(m_currentWeather);
+
     } else {
         m_wcommon->setBackgroundColor(0.0f);
         emit m_wcommon->weatherDownloadError(WeatherCommon::Current, reply->error());
@@ -357,10 +358,11 @@ void WeatherModel::onWeatherForecastRequestFinished()
                 m_forecastDates.insertMulti(wData->timestamp().date(), wData);
                 //qDebug() << wData->dump();
             }
-
         }
         endResetModel();
         setDaysNumber(m_forecastDates.uniqueKeys().size());
+        //save last search
+        m_wcommon->saveLastRequestedWeather(m_cityName + "," + m_countryID);
     } else {
         emit m_wcommon->weatherDownloadError(WeatherCommon::Forecast, reply->error());
         qDebug() << "Forecast request failure" <<reply->error();

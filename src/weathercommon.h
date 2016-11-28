@@ -85,6 +85,9 @@ public slots:
     void search(const QString &city);
     void search();
 
+    /// @brief Saves city name, coordinates and last selected search criteria: by coordinate or by city
+    void saveLastRequestedWeather(const QString &city);
+
 private:
     QGeoCoordinate m_coordinate;
     QColor m_backgroundColor;

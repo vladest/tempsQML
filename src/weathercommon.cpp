@@ -26,6 +26,19 @@ WeatherCommon::WeatherCommon(QObject *parent) : QObject(parent)
     setMenuBarWeather(settings.value("sys_tray", true).toBool());
     setRunAtStartup(settings.value("run_startup", true).toBool());
     setShowAnimation(settings.value("animation_fx", true).toBool());
+    //check what was requested last and made request again
+    m_searchCriteria = (WeatherCommon::SearchCriteria)(settings.value("last_searchcriteria", WeatherCommon::Coordinates).toInt());
+    m_searchCity = settings.value("last_city", QVariant("")).toString();
+    //read and parse coordinates
+    double _lat = settings.value("last_lat", 0.0f).toFloat();
+    double _lng = settings.value("last_long", 0.0f).toFloat();
+    m_coordinate = QGeoCoordinate(_lat, _lng);
+
+    if (m_searchCriteria == WeatherCommon::Coordinates && m_coordinate.isValid()) {
+        search();
+    } else if (m_searchCriteria == WeatherCommon::CityName && !m_searchCity.isEmpty()) {
+        search(m_searchCity);
+    }
 }
 
 qreal WeatherCommon::convertToCurrentScale(qreal temp_k)
@@ -168,6 +181,18 @@ void WeatherCommon::search()
         m_searchCriteria = Coordinates;
         emit requestWeatherUpdate();
     }
+}
+
+void WeatherCommon::saveLastRequestedWeather(const QString &city)
+{
+    if (!city.isEmpty()) {
+        settings.setValue("last_city", city);
+    }
+    if (m_coordinate.isValid()) {
+        settings.setValue("last_lat", m_coordinate.latitude());
+        settings.setValue("last_long", m_coordinate.longitude());
+    }
+    settings.setValue("last_searchcriteria", m_searchCriteria);
 }
 
 QString WeatherCommon::getSearchCity() const
