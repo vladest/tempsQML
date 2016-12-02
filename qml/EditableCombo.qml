@@ -70,43 +70,30 @@ Item {
         id: combo
         width: root.width
         model: citiesModel
-        font.pixelSize: 16
-        padding: 2
-        rightPadding: 2
-        //flat: true
-        onCurrentIndexChanged: {
-            textField.text = citiesModel.get(currentIndex).city
-            weatherCommon.search(textField.text)
-        }
-        contentItem: TextField {
-            id: textField
-            padding: 2
-            text: combo.currentText
-            font: combo.font
-            rightPadding: 40
-            //color: "#ffffff"
-            onTextChanged: {
-                findTimer.restart()
-            }
-            Keys.onReturnPressed: {
-                enterPressed()
-            }
-            background: Item {
-                Rectangle {
-                    width: parent.width
-                    height: 2
-                    y: parent.height - 2
-                    color: "#999999"
-                }
+        height: 24*appscale
+        font.pixelSize: appRoot.height / 30
+        padding: 2*appscale
+        rightPadding: 2*appscale
+        background: Item {
+            width: parent.width
+            height: parent.height
+
+            Row {
+                id: backgrrow
+                height: parent.height
+                anchors.right: parent.right
+                anchors.rightMargin: combo.indicator.width - combo.padding
+                spacing: 0
                 Button {
                     id: button
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: fav.left
-                    width: 20; height: 20;
+                    height: parent.height
+                    width: height
                     background: PartialImage {
+                        anchors.centerIn: parent
                         width: 20; height: 20;
                         imageOffsetX: -120
-                        scale: button.pressed ? 0.80 : 1
+                        scale: button.pressed ? 0.80*appscale : appscale
                     }
                     onClicked: {
                         weatherCommon.search()
@@ -116,10 +103,12 @@ Item {
                 CheckBox {
                     id: fav
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    width: 20; height: 20;
+                    height: parent.height
+                    width: height
                     indicator: PartialImage {
                         width: 20; height: 20;
+                        anchors.centerIn: parent
+                        scale: appscale
                         imageOffsetX: fav.checked ? -100 : -80
                     }
                     onCheckedChanged: {
@@ -134,7 +123,37 @@ Item {
                     }
                 }
             }
+            Rectangle {
+                width: parent.width
+                height: 2*appscale
+                y: parent.height + 2*appscale
+                color: "#999999"
+            }
         }
-        Component.onCompleted: contentItem.width = width - 40
+        //flat: true
+        onCurrentIndexChanged: {
+            textField.text = citiesModel.get(currentIndex).city
+            weatherCommon.search(textField.text)
+        }
+        contentItem: TextField {
+            id: textField
+            padding: 2*appscale
+            text: combo.currentText
+            font: combo.font
+            //rightPadding: appRoot.height / 12
+            //color: "#ffffff"
+            onTextChanged: {
+                findTimer.restart()
+            }
+            Keys.onReturnPressed: {
+                enterPressed()
+            }
+            background: Item {}
+        }
+        Component.onCompleted:  {
+            combo.contentItem.width = Qt.binding(function() { return combo.width - backgrrow.width - indicator.width})
+        }
     }
+
 }
+

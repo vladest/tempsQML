@@ -4,7 +4,7 @@ import weathermodel 1.0
 
 Rectangle {
     id: root
-    property real yPage: 0
+    property real yPage: menu.state === "menu" ? appRoot.height / 1.6 : appRoot.height / 4.8
     color: weatherCommon.backgroundColor
     signal settingsClicked
     property alias menuButton: menu
@@ -81,7 +81,7 @@ Rectangle {
         lifeSpan: 2000
         velocity: AngleDirection {angle: 90; magnitude: 500;}
         width: parent.width
-        height: 200
+        height: yPage
     }
 
     ParticleSystem {
@@ -101,7 +101,7 @@ Rectangle {
         //snow flakes slower than rain drops
         velocity: AngleDirection {angle: 90; magnitude: 50;}
         width: parent.width
-        height: 300
+        height: yPage
     }
 
     ItemParticle {
@@ -124,10 +124,10 @@ Rectangle {
 
     Text {
         id: clock
-        height: 20
+        height: appRoot.height / 24
         z: 100
-        anchors { right: parent.right; top: parent.top; rightMargin: 10; topMargin: 10; }
-        font.pixelSize: 12
+        anchors { right: parent.right; top: parent.top; rightMargin: appRoot.width / 48; topMargin: appRoot.height / 48; }
+        font.pixelSize: appRoot.height / 40
         color: "white"
         Timer {
             interval: 5000
@@ -141,14 +141,14 @@ Rectangle {
     }
     MenuClose {
         id: menu
-        height: 20
-        width: 20
+        height: appRoot.height/24
+        width: height
         z: 1000
         onStateChanged: {
             settingsClicked()
         }
 
-        anchors { left: parent.left; top: parent.top; leftMargin: 10; topMargin: 10; }
+        anchors { left: parent.left; top: parent.top; leftMargin: appRoot.width/28; topMargin: appRoot.height/28; }
         MouseArea {
             anchors.fill: parent
             onClicked: menu.state = (menu.state == "menu" ? "back" : "menu")

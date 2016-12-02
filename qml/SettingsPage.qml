@@ -19,22 +19,23 @@ Item {
         anchors.bottomMargin: 20
         spacing: 10
         Row {
-            width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 5
             Image {
                 source: "images/app.png"
-                width: 45
-                height: 45
+                width: appRoot.height / 10
+                height: width
             }
             Text {
                 text: "tempsQML"
-                font.pixelSize: 32
+                font.pixelSize: appRoot.height / 15
                 font.bold: true
                 anchors.verticalCenter: parent.verticalCenter
             }
             Image {
                 id: smallSun
+                width: appRoot.height / 24
+                height: width
                 source: "images/IconTemplate@2x.png"
                 PropertyAnimation {
                     target: smallSun
@@ -46,7 +47,7 @@ Item {
         Text {
             text: qsTr("City")
             color: "#999999"
-            font.pixelSize: 14
+            font.pixelSize: appRoot.height / 35
         }
         EditableCombo {
             id: cityEdit
@@ -60,26 +61,30 @@ Item {
         Row {
             width: parent.width
             Text {
+                font.pixelSize: appRoot.height/32
                 anchors.verticalCenter: parent.verticalCenter
                 text: qsTr("Temperature scale")
                 color: "#999999"
             }
             Item {
-                width: 20; height: 1
+                width: 20*appscale; height: 1
             }
 
             ButtonGroup { id: scaleGroup }
 
             SettingsRadio {
                 id: cels
-                font.pixelSize: 18
+                font.pixelSize: appRoot.height/26
                 text: "\u00B0C"
                 checked: weatherCommon.tempScale === WeatherCommon.Celsium
                 ButtonGroup.group: scaleGroup
             }
+            Item {
+                width: 5*appscale; height: 1
+            }
             SettingsRadio {
                 id: fahr
-                font.pixelSize: 18
+                font.pixelSize: appRoot.height/26
                 text: "\u00B0F"
                 checked: weatherCommon.tempScale === WeatherCommon.Fahrenheit
                 ButtonGroup.group: scaleGroup

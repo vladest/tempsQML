@@ -3,13 +3,17 @@ import QtQuick.Controls 2.0
 
 CheckBox {
     id: control
+    font.pixelSize: appRoot.height/32
 
     indicator: PartialImage {
-        x: control.leftPadding
-        y: parent.height / 2 - height / 2
-        width: 20; height: 20;
-        imageOffsetX: control.checked ? -20 : 0
-    }
+            x: control.leftPadding
+            y: parent.height / 2 - height / 2
+            scale: appscale
+            width: 20;
+            height: 20;
+            imageOffsetX: control.checked ? -20 : 0
+        }
+
 
     contentItem: Text {
         text: control.text

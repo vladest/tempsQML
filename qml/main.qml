@@ -4,12 +4,15 @@ import QtQuick.Layouts 1.0
 import "."
 
 ApplicationWindow {
+    id: appRoot
     visible: true
+
     width: 280
     height: 480
     title: qsTr("tempsQML")
     property alias backgr: mainView.background
     property alias mainView: mainView
+    property real appscale: appRoot.height/480
 
     //store items, pushed to StackView
     property Item itemSettings: null
@@ -38,12 +41,9 @@ ApplicationWindow {
             Connections {
                 target: waiwedItem.menuButton
                 onStateChanged: {
-                    //if (mainView.currentItem === itemSettings) {
                     if (waiwedItem.menuButton.state === "menu") {
-                        backgr.yPage = 300
                         mainView.pop()
                     } else {
-                        backgr.yPage = 100
                         itemSettings = mainView.push(settingsComponent)
                     }
                 }

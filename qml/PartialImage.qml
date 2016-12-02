@@ -1,11 +1,12 @@
 import QtQuick 2.5
-
+import QtGraphicalEffects 1.0
 Item {
     property real imageOffsetX: 0
     property real imageOffsetY: 0
     clip: true
 
     Image {
+        id: img
         source: "images/checkboxes@2x.png"
         cache: false
         x: imageOffsetX

@@ -23,7 +23,7 @@ Item {
         Text {
             width: parent.width
             color: "#999999"
-            font.pixelSize: 10
+            font.pixelSize: appRoot.height / 48
             text: Qt.formatDateTime(timestamp, "ddd")
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -31,8 +31,8 @@ Item {
 
         ColoredImage {
             anchors.horizontalCenter: parent.horizontalCenter
-            height: 59
-            width: 59
+            height: appRoot.height / 8
+            width: appRoot.height / 8
             source: "images/icons/" + weather_codition_icon_id + ".svg"
             overlayColor: weatherCommon.backgroundColor
         }
@@ -40,13 +40,13 @@ Item {
         Text {
             width: parent.width
             color: "#999999"
-            font.pixelSize: 14
+            font.pixelSize: appRoot.height / 34
             text: weatherCommon.roundup(weatherCommon.convertToCurrentScale(temp_day)) + "\u00B0"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
         Item {
-            height: 16
+            height: appRoot.height / 30
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width
             Wind {
@@ -58,7 +58,7 @@ Item {
         }
         Text {
             width: parent.width
-            font.pixelSize: 10
+            font.pixelSize: appRoot.height / 48
             color: "#999999"
             text: weatherCommon.roundup(pressure)
             horizontalAlignment: Text.AlignHCenter
@@ -66,7 +66,7 @@ Item {
         }
         Text {
             width: parent.width
-            font.pixelSize: 10
+            font.pixelSize: appRoot.height / 48
             color: "#999999"
             text: weatherCommon.roundup(humidity) + "%"
             horizontalAlignment: Text.AlignHCenter

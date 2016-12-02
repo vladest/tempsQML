@@ -4,6 +4,8 @@ import QtQuick.Controls 2.0
 Button {
     id: control
 
+    font.pixelSize: appRoot.height/32
+
     contentItem: Text {
         text: control.text
         font: control.font
