@@ -4,6 +4,7 @@ Item {
   id: mainRect
 
   property real radius: 3
+  property color color: "white"
 
   Rectangle {
     id: bar1
@@ -13,6 +14,7 @@ Item {
     height: parent.height * .15
     radius: parent.radius
     antialiasing: true
+    color: mainRect.color
   }
 
   Rectangle {
@@ -23,6 +25,7 @@ Item {
     height: parent.height * .15
     radius: parent.radius
     antialiasing: true
+    color: mainRect.color
   }
 
   Rectangle {
@@ -33,6 +36,7 @@ Item {
     height: parent.height * .15
     radius: parent.radius
     antialiasing: true
+    color: mainRect.color
   }
 
   property int animationDuration: 350

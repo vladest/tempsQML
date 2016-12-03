@@ -1,4 +1,4 @@
-QT += qml quick positioning location widgets
+QT += qml quick positioning location widgets svg
 
 CONFIG += c++11 flat
 
@@ -47,3 +47,18 @@ HEADERS += \
     src/systemtrayicon.h \
     src/weathercommon.h \
     src/settings.h
+
+DISTFILES += \
+    android/AndroidManifest.xml \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradlew \
+    android/res/values/libs.xml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew.bat
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+    ANDROID_EXTRA_LIBS =
+}

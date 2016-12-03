@@ -51,8 +51,8 @@ Item {
         spacing: 10
         MenuClose {
             state: "back"
-            height: 30
-            width: 30
+            height: 30*appscale
+            width: 30*appscale
 
             MouseArea {
                 anchors.fill: parent

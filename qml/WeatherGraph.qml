@@ -15,20 +15,27 @@ Item {
             //console.log("filtered count", count)
             if (count > 0) {
                 tempsSeries.removePoints(0, graphPoints)
-                valueAxisX.max = count - 1
+                valueAxisX.max = Math.max(count - 1, 1)
                 var min = weatherCommon.roundup(weatherCommon.convertToCurrentScale(model.data(visualModel.modelIndex(0), 258)))
                 tempsSeries.append(0, min)
                 var max = min
-                for (var i = 1; i < count; i++) {
-                    var val = weatherCommon.roundup(weatherCommon.convertToCurrentScale(model.data(visualModel.modelIndex(i), 258)))
-                    tempsSeries.append(i, val)
-                    if (val > max)
-                        max = val
-                    else if (val < min)
-                        min = val
-                    //console.log(val)
+                if (count === 1) {
+                    //simulating line
+                    tempsSeries.append(1, min)
+                } else {
+
+                    for (var i = 1; i < count; i++) {
+                        var val = weatherCommon.roundup(weatherCommon.convertToCurrentScale(model.data(visualModel.modelIndex(i), 258)))
+                        tempsSeries.append(i, val)
+                        if (val > max)
+                            max = val
+                        else if (val < min)
+                            min = val
+                        //console.log(val)
+                    }
                 }
-                graphPoints = count
+
+                graphPoints = Math.max(count, 2)
 
                 valueAxisY.min = min - 1
                 valueAxisY.max = max + 1
@@ -47,6 +54,7 @@ Item {
         margins.right: 0
         backgroundColor: "transparent"
         antialiasing: true
+        clip: false
 
         ValueAxis {
             visible: false
@@ -64,7 +72,7 @@ Item {
 
         SplineSeries {
             id: tempsSeries
-            width: 4
+            width: 4*appscale
             style: Qt.SolidLine
             capStyle: Qt.RoundCap
             axisX: valueAxisX
@@ -73,27 +81,51 @@ Item {
             pointsVisible: true
             useOpenGL: true
 
+            function updateWeather(point) {
+                var _index = Math.round(point.x)
+                //index safety
+                if (_index >= visualModel.model.count && visualModel.model.count > 0)
+                    _index = visualModel.model.count - 1
+                weatherLegend.x = chartView.width/graphPoints * point.x - weatherLegend.width / 2
+                weatherLegend._temp = weatherCommon.roundup(point.y)
+                weatherLegend._time = Qt.formatDateTime(visualModel.model.data(visualModel.modelIndex(_index), 257), "ddd hh:mm")
+                weatherLegend._iconid = visualModel.model.data(visualModel.modelIndex(_index), 268)
+            }
+
+            onPressed: {
+                weatherLegend.visible = true
+                updateWeather(point)
+            }
+
+            //only for systems with mouse
             onHovered: {
                 weatherLegend.visible = state
 
                 if (state) {
-                    var _index = Math.round(point.x)
-                    weatherLegend.x = chartView.width/graphPoints * point.x - weatherLegend.width / 2
-                    weatherLegend._temp = weatherCommon.roundup(point.y)
-                    weatherLegend._time = Qt.formatDateTime(visualModel.model.data(visualModel.modelIndex(_index), 257), "ddd hh:mm")
-                    weatherLegend._iconid = visualModel.model.data(visualModel.modelIndex(_index), 268)
+                    updateWeather(point)
                 }
-
-                //console.log(point, state)
             }
         }
+    }
+
+    MenuClose {
+        state: "back"
+        color: weatherCommon.backgroundColor
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.leftMargin: 10*appscale
+        height: 20*appscale
+        width: 20*appscale
+
         MouseArea {
             anchors.fill: parent
             onClicked: {
+                weatherLegend.visible = false
                 subdetails.showdetailsindex = -1
             }
         }
     }
+
     Item {
         id: weatherLegend
         visible: false
@@ -101,32 +133,32 @@ Item {
         property string _iconid: ""
         property string _time: ""
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
-        height: 50
-        width: 60
+        anchors.bottomMargin: 5*appscale
+        height: 50*appscale
+        width: 60*appscale
         Column {
             Row {
                 anchors.horizontalCenter: parent.horizontalCenter
                 ColoredImage {
                     source: weatherLegend._iconid !== "" ? "images/icons/" + weatherLegend._iconid + ".svg" : ""
-                    width: 32
-                    height: 32
+                    width: 32*appscale
+                    height: 32*appscale
                     overlayColor: "#999999"
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     text: weatherLegend._temp + "\u00B0C"
                     color: "#999999"
-                    font.pixelSize: 18
+                    font.pixelSize: 18*appscale
                 }
             }
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: weatherLegend._time
                 verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter//"mon, 14:00"
+                horizontalAlignment: Text.AlignHCenter
                 color: "#999999"
-                font.pixelSize: 12
+                font.pixelSize: 12*appscale
             }
         }
 

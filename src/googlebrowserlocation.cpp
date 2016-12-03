@@ -46,7 +46,6 @@ int GoogleBrowserLocation::tzoffset() const
 void GoogleBrowserLocation::setTzoffset(int tzoffset)
 {
     m_tzoffset = tzoffset;
-    qDebug() << "tzoffset" << tzoffset;
     emit tzoffsetChanged(tzoffset);
 }
 
@@ -98,7 +97,7 @@ void GoogleBrowserLocation::setBrowserCoordinate(QGeoCoordinate browserCoordinat
     if (m_browserCoordinate == browserCoordinate)
         return;
 
-    qDebug() << "coord" << browserCoordinate;
+    //qDebug() << "coord" << browserCoordinate;
     m_browserCoordinate = browserCoordinate;
     emit browserCoordinateChanged(browserCoordinate);
     requestTimezone(m_browserCoordinate);

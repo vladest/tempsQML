@@ -82,7 +82,6 @@ void WeatherCommon::setTempScale(TemperatureScales tempScale)
 {
     m_tempScale = tempScale;
     settings.setValue("temp_scale", tempScale);
-    qDebug() << "temp scale" << tempScale;
     emit tempScaleChanged(tempScale);
     emit temperatureScaleChanged(temperatureScale());
 }
