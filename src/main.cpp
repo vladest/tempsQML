@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QWindow>
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
 #include <QNetworkProxyFactory>
@@ -18,6 +19,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("vladest.org");
 
     QApplication app(argc, argv);
+
+#ifdef Q_OS_LINUX
+    QApplication::setWindowIcon(QIcon(":/tempsqml.png"));
+#endif /* Q_OS_LINUX */
 
     QNetworkProxyFactory::setUseSystemConfiguration(true);
 
