@@ -13,6 +13,10 @@
 
 int main(int argc, char *argv[])
 {
+    const QByteArray additionalLibraryPaths = qgetenv("QTLOCATION_EXTRA_LIBRARY_PATH");
+    for (const QByteArray &p : additionalLibraryPaths.split(':'))
+        QCoreApplication::addLibraryPath(QString(p));
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setApplicationName("tempsQML");
     QCoreApplication::setOrganizationName("vladest");

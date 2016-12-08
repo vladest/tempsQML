@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtCharts 2.0
 import QtQml.Models 2.2
+import weathermodel 1.0
 
 Item {
     id: weatherChart
@@ -75,11 +76,16 @@ Item {
             width: 4*appscale
             style: Qt.SolidLine
             capStyle: Qt.RoundCap
+            pointLabelsClipping: false
+            pointLabelsVisible: true
+            pointLabelsColor: "#999999"
+            pointLabelsFont.pixelSize: 12*appscale
+            pointLabelsFormat: weatherCommon.tempScale === WeatherCommon.Celsium ? "@yPoint \u00B0C" : "@yPoint \u00B0F"
             axisX: valueAxisX
             axisY: valueAxisY
             color: weatherCommon.backgroundColor
             pointsVisible: true
-            useOpenGL: true
+            //useOpenGL: true
 
             function updateWeather(point) {
                 var _index = Math.round(point.x)
@@ -147,7 +153,7 @@ Item {
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: weatherLegend._temp + "\u00B0C"
+                    text: weatherLegend._temp + "\u00B0"+weatherCommon.temperatureScale
                     color: "#999999"
                     font.pixelSize: 18*appscale
                 }
