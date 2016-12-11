@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Particles 2.0
 import weathermodel 1.0
+import QtMultimedia 5.6
 
 Rectangle {
     id: root
@@ -9,6 +10,112 @@ Rectangle {
     signal settingsClicked
     property alias menuButton: menu
     state: "none"
+
+    //onColorChanged: console.log("color", color)
+    Timer {
+        id: pauseTimer
+        interval: 1
+        repeat: false
+        onTriggered: mediaPlayer.pause();
+    }
+
+    MediaPlayer {
+        id: mediaPlayer
+        loops: 1
+        source: weatherCommon.showVideo ? weatherCommon.currentVideo: ""
+        onErrorChanged: console.log("video error", error, errorString)
+
+        onStatusChanged: {
+            console.log("video status", status)
+            if (status === MediaPlayer.Loaded) {
+                mediaPlayer.play()
+            }
+        }
+        onPositionChanged: {
+            if (mediaPlayer.position > 1000 && mediaPlayer.duration - mediaPlayer.position < 1100) {
+                pauseTimer.start()
+            }
+        }
+        onSourceChanged: {
+            console.log("video", source)
+        }
+    }
+
+    VideoOutput {
+        id: videoOutput
+        visible: weatherCommon.showVideo
+        //anchors.centerIn: parent
+        y: appRoot.height / 5
+        width: parent.width
+        height: width / (840/640)
+        source: mediaPlayer
+        fillMode: VideoOutput.Stretch
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                mediaPlayer.seek(0)
+                mediaPlayer.play()
+            }
+        }
+    }
+    ShaderEffect {
+        id: videoBlendingShader
+        visible: weatherCommon.showVideo
+        property variant source: ShaderEffectSource {
+            sourceItem: videoOutput;
+            textureMirroring: ShaderEffectSource.MirrorHorizontally
+            smooth: false
+            hideSource: true
+        }
+        //enabled: false
+
+        property color backgroundSourceColor: weatherCommon.backgroundColor
+        anchors.fill: videoOutput
+        blending: false
+        onLogChanged: console.log(log)
+
+        fragmentShader: "
+            uniform sampler2D source;
+            uniform lowp float qt_Opacity;
+            uniform vec4 backgroundSourceColor;
+            varying vec2 qt_TexCoord0;
+
+            float th = 4.0; // threshold
+            float a2 = .8;
+            float spill = 1.0;
+
+            float getAlpha(vec4 c){
+                // First Vlahos assumption: Gf <= a2Bf
+                return 1.0 - th*(c.g-a2*(max(c.r,c.b)));
+            }
+
+            vec4 despill(vec4 c){
+                /// Second Vlahos assumption: max (Gf - Bf,0) <= max(Bf - Rf, 0)
+                float sub = max(c.g - mix(c.b, c.r, 0.45), 0.0);
+                c.g -= sub;
+                c.a -= smoothstep(0.25, 0.5, sub*c.a);
+
+                //restore luminance (kind of, I slightly reduced the green weight)
+                float luma = dot(c.rgb, vec3(0.350, 0.587,0.164));
+                c.r += sub*c.r*2.0*.350/luma;
+                c.g += sub*c.g*2.0*.587/luma;
+                c.b += sub*c.b*2.0*.164/luma;
+
+                return c;
+            }
+
+            void main() {
+                vec2 uv = vec2(0,1) + vec2(1,-1) * qt_TexCoord0.xy;
+                vec4 fg = texture2D(source, uv);
+                vec4 ofg = fg;
+
+                fg.a = clamp(getAlpha(fg), 0.0, 1.0);
+                fg = despill(fg);
+
+                gl_FragColor.rgb = ofg.rgb;
+                gl_FragColor.rgb = backgroundSourceColor.rgb*(1.0-fg.a) + fg.rgb*fg.a;
+            }"
+    }
 
     //flash effect
     SequentialAnimation {

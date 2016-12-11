@@ -1,4 +1,4 @@
-QT += qml quick positioning location widgets svg
+QT += qml quick positioning location widgets svg multimedia
 
 CONFIG += c++11 flat
 

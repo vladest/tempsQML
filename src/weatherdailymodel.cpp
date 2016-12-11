@@ -72,6 +72,8 @@ QHash<int, QByteArray> WeatherDailyModel::roleNames() const {
     roles[WindGustRole] = "wind_gust";
     roles[RainRole] = "rain";
     roles[SnowRole] = "snow";
+    roles[SunriseRole] = "sunrise";
+    roles[SunsetRole] = "sunset";
     return roles;
 }
 
@@ -127,6 +129,10 @@ QVariant WeatherDailyModel::data(const QModelIndex &index, int role) const
         return m_dailyList.at(index.row())->rain_3h();
     else if (role == SnowRole)
         return m_dailyList.at(index.row())->snow_3h();
+    else if (role == SunriseRole)
+        return m_dailyList.at(index.row())->sunrise();
+    else if (role == SunsetRole)
+        return m_dailyList.at(index.row())->sunset();
     else
         return QVariant();
 }
@@ -227,7 +233,9 @@ void WeatherDailyModel::onWeatherDailyRequestFinished()
     } else {
         qDebug() << "Error requestin daily weather data" << reply->error() << reply->url();
         emit m_wcommon->weatherDownloadError(WeatherCommon::Daily, reply->error());
-        m_wcommon->setBackgroundColor(0.0f);
+        if (reply->error() != QNetworkReply::OperationCanceledError)
+            m_wcommon->setBackgroundColor(0.0f);
+
     }
     replyDaily = nullptr;
 }

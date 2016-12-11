@@ -7,7 +7,7 @@
 class WeatherData: public QObject {
     Q_OBJECT
 
-    Q_PROPERTY(QDateTime timestamp READ timestamp WRITE set_timestamp NOTIFY timestamp_changed) //weather it the time
+    Q_PROPERTY(QDateTime timestamp READ timestamp WRITE set_timestamp NOTIFY timestamp_changed)
     Q_PROPERTY(qreal temp READ temp WRITE set_temp NOTIFY temp_changed)
     Q_PROPERTY(qreal temp_min READ temp_min WRITE set_temp_min NOTIFY temp_min_changed)
     Q_PROPERTY(qreal temp_max READ temp_max WRITE set_temp_max NOTIFY temp_max_changed)
@@ -29,6 +29,8 @@ class WeatherData: public QObject {
     Q_PROPERTY(qreal rain_3h READ rain_3h WRITE set_rain_3h NOTIFY rain_3h_changed)
     Q_PROPERTY(qreal snow_3h READ snow_3h WRITE set_snow_3h NOTIFY snow_3h_changed)
     Q_PROPERTY(QString timestamp_string READ timestamp_string WRITE set_timestamp_string NOTIFY timestamp_string_changed)
+    Q_PROPERTY(QDateTime sunrise READ sunrise WRITE set_sunrise NOTIFY sunrise_changed)
+    Q_PROPERTY(QDateTime sunset READ sunset WRITE set_sunset NOTIFY sunset_changed)
 public:
     WeatherData(QObject *parent = 0);
     virtual ~WeatherData() {}
@@ -65,6 +67,16 @@ public:
     qreal temp_eve() const;
     qreal temp_night() const;
 
+    QDateTime sunrise() const
+    {
+        return m_sunrise;
+    }
+
+    QDateTime sunset() const
+    {
+        return m_sunset;
+    }
+
 public slots:
     void set_timestamp(QDateTime timestamp);
     void set_temp(qreal temp);
@@ -89,6 +101,24 @@ public slots:
     void set_temp_eve(qreal temp_eve);
     void set_temp_night(qreal temp_night);
 
+    void set_sunrise(QDateTime sunrise)
+    {
+        if (m_sunrise == sunrise)
+            return;
+
+        m_sunrise = sunrise;
+        emit sunrise_changed(sunrise);
+    }
+
+    void set_sunset(QDateTime sunset)
+    {
+        if (m_sunset == sunset)
+            return;
+
+        m_sunset = sunset;
+        emit sunset_changed(sunset);
+    }
+
 signals:
     void timestamp_changed(QDateTime timestamp);
     void temp_changed(qreal temp);
@@ -109,12 +139,11 @@ signals:
     void snow_3h_changed(qreal snow_3h);
     void timestamp_string_changed(QString timestamp_string);
     void pressure_grnd_level_changed(qreal pressure_grnd_level);
-
     void temp_morn_changed(qreal temp_morn);
-
     void temp_eve_changed(qreal temp_eve);
-
     void temp_night_changed(qreal temp_night);
+    void sunrise_changed(QDateTime sunrize);
+    void sunset_changed(QDateTime sunset);
 
 private:
 
@@ -140,6 +169,8 @@ private:
     qreal m_temp_morn;
     qreal m_temp_eve;
     qreal m_temp_night;
+    QDateTime m_sunrise;
+    QDateTime m_sunset;
 };
 
 

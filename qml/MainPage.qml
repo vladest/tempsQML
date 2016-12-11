@@ -4,16 +4,6 @@ import QtQuick.Controls 2.0
 Item {
     id: root
 
-    ColoredImage {
-        width: parent.width / 3.5
-        height: width
-        overlayColor: "white"
-        anchors { top: parent.top; topMargin: parent.height * 0.14; left: parent.left; leftMargin: parent.width * 0.08; }
-        source: weatherModel.currentWeather.weather_codition_icon_id === "" ?
-                    "images/icons/IconTemplate@02d.png" :
-                    "images/icons/" + weatherModel.currentWeather.weather_codition_icon_id + ".svg"
-    }
-
     Button {
         height: appRoot.height/24
         width: height
@@ -26,11 +16,21 @@ Item {
             mainView.push(mapComponent)
         }
     }
+    ColoredImage {
+        width: appRoot.height / 4.8
+        height: width
+        overlayColor: "white"
+        anchors { top: parent.top; topMargin: parent.height * 0.14; right: parent.right; rightMargin: parent.width * 0.04; }
+        source: weatherModel.currentWeather.weather_codition_icon_id === "" ?
+                    "images/icons/IconTemplate@02d.png" :
+                    "images/icons/" + weatherModel.currentWeather.weather_codition_icon_id + ".svg"
+    }
     Column {
-        height: appRoot.height / 4.8
-        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: parent.height * 0.3 - 30
+        anchors.topMargin: appRoot.height / 4
+        anchors.horizontalCenter: parent.horizontalCenter
+        height: appRoot.height / 4.8
+
         Row {
             id: degrow
             anchors.horizontalCenter: parent.horizontalCenter

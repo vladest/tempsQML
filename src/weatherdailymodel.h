@@ -40,7 +40,9 @@ public:
         WindDegreesRole,
         WindGustRole,
         RainRole,
-        SnowRole
+        SnowRole,
+        SunriseRole,
+        SunsetRole
     };
 
     explicit WeatherDailyModel(WeatherCommon *wcommon, QAbstractListModel *parent = nullptr);

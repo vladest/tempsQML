@@ -88,6 +88,8 @@ QHash<int, QByteArray> WeatherModel::roleNames() const {
     roles[Rain3HRole] = "rain_3h";
     roles[Snow3HRole] = "snow_3h";
     roles[TimestampStringRole] = "timestamp_string";
+    roles[SunriseRole] = "sunrise";
+    roles[SunsetRole] = "sunset";
     return roles;
 }
 
@@ -143,6 +145,10 @@ QVariant WeatherModel::data(const QModelIndex &index, int role) const
         return m_forecastList.at(index.row())->snow_3h();
     else if (role == TimestampStringRole)
         return m_forecastList.at(index.row())->timestamp_string();
+    else if (role == SunriseRole)
+        return m_forecastList.at(index.row())->sunrise();
+    else if (role == SunsetRole)
+        return m_forecastList.at(index.row())->sunset();
     else
         return QVariant();
 }
@@ -273,11 +279,19 @@ void WeatherModel::onWeatherCurrentRequestFinished()
         if (!snowObj.isEmpty()) {
             m_currentWeather->set_snow_3h(snowObj.value("3h").toDouble());
         }
+        QJsonObject sysObj = obj.value("sys").toObject();
+        if (!sysObj.isEmpty()) {
+            m_currentWeather->set_sunrise(QDateTime::fromTime_t(sysObj.value("sunrise").toInt(), Qt::UTC, m_wcommon->getTimezoneOffset()));
+            m_currentWeather->set_sunset(QDateTime::fromTime_t(sysObj.value("sunset").toInt(), Qt::UTC, m_wcommon->getTimezoneOffset()));
+        }
         m_wcommon->setBackgroundColor(m_currentWeather->temp());
         emit currentWeatherChanged(m_currentWeather);
+        m_wcommon->setCurrentVideo(*m_currentWeather);
 
     } else {
-        m_wcommon->setBackgroundColor(0.0f);
+        qDebug() << "Current request failure" <<reply->error();
+        if (reply->error() != QNetworkReply::OperationCanceledError)
+            m_wcommon->setBackgroundColor(0.0f);
         emit m_wcommon->weatherDownloadError(WeatherCommon::Current, reply->error());
     }
     replyCurrent = nullptr;
@@ -366,7 +380,8 @@ void WeatherModel::onWeatherForecastRequestFinished()
     } else {
         emit m_wcommon->weatherDownloadError(WeatherCommon::Forecast, reply->error());
         qDebug() << "Forecast request failure" <<reply->error();
-        m_wcommon->setBackgroundColor(0.0f);
+        if (reply->error() != QNetworkReply::OperationCanceledError)
+            m_wcommon->setBackgroundColor(0.0f);
     }
     replyForecast = nullptr;
 }

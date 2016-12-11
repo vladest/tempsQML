@@ -111,6 +111,13 @@ Item {
             text: qsTr("Show weather animation")
             checked: weatherCommon.showAnimation
         }
+        SettingsCheck {
+            id: showVideo
+            width: parent.width
+            leftPadding: 0
+            text: qsTr("Show weather video")
+            checked: weatherCommon.showVideo
+        }
         Row {
             width: parent.width
             spacing: 10
@@ -121,6 +128,7 @@ Item {
                     weatherCommon.menuBarWeather = systray.checked
                     weatherCommon.runAtStartup = startup.checked
                     weatherCommon.showAnimation = anim.checked
+                    weatherCommon.showVideo = showVideo.checked
                     weatherCommon.tempScale = fahr.checked ? WeatherCommon.Fahrenheit : WeatherCommon.Celsium
                     waiwedItem.menuButton.state = "menu"
                     weatherCommon.requestWeatherUpdate()

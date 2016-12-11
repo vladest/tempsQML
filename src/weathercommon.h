@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QGeoCoordinate>
 #include <QColor>
+#include "weatherdata.h"
 
 class WeatherCommon : public QObject
 {
@@ -12,7 +13,9 @@ class WeatherCommon : public QObject
 
     Q_PROPERTY(QColor backgroundColor READ backgroundColor NOTIFY backgroundColorChanged)
     Q_PROPERTY(QString temperatureScale READ temperatureScale NOTIFY temperatureScaleChanged)
+    Q_PROPERTY(QString currentVideo READ currentVideo NOTIFY currentVideoChanged)
     Q_PROPERTY(bool showAnimation READ showAnimation WRITE setShowAnimation NOTIFY showAnimationChanged)
+    Q_PROPERTY(bool showVideo READ showVideo WRITE setShowVideo NOTIFY showVideoChanged)
     Q_PROPERTY(bool menuBarWeather READ menuBarWeather WRITE setMenuBarWeather NOTIFY menuBarWeatherChanged)
     Q_PROPERTY(bool runAtStartup READ runAtStartup WRITE setRunAtStartup NOTIFY runAtStartupChanged)
     Q_PROPERTY(TemperatureScales tempScale READ tempScale  WRITE setTempScale  NOTIFY tempScaleChanged)
@@ -54,15 +57,14 @@ public:
     bool showAnimation() const;
     bool menuBarWeather() const;
     bool runAtStartup() const;
-
     void setTempScale(TemperatureScales tempScale);
     TemperatureScales tempScale() const;
-
     QGeoCoordinate getCoordinate() const;
-
     WeatherCommon::SearchCriteria getSearchCriteria() const;
-
     QString getSearchCity() const;
+    QString currentVideo() const;
+    void setCurrentVideo(const WeatherData &wdata);
+    bool showVideo() const;
 
 signals:
     void backgroundColorChanged(QColor backgroundColor);
@@ -73,6 +75,8 @@ signals:
     void tempScaleChanged(TemperatureScales tempScale);
     void requestWeatherUpdate();
     void weatherDownloadError(WeatherType weatherType, int weatherError);
+    void currentVideoChanged(QString currentVideo);
+    void showVideoChanged(bool showVideo);
 
 public slots:
     void setCoordinates(const QGeoCoordinate &coordinate);
@@ -87,19 +91,26 @@ public slots:
 
     /// @brief Saves city name, coordinates and last selected search criteria: by coordinate or by city
     void saveLastRequestedWeather(const QString &city);
+    void setShowVideo(bool showVideo);
 
 private:
     QGeoCoordinate m_coordinate;
     QColor m_backgroundColor;
     int m_TimezoneOffset;
     static QList<QColor> _colorsTable;
+    static QMap<QList<int>, QString> _videoNamesTable;
+    static QMap<QList<int>, QString> _videoNamesNightTable;
     bool m_showAnimation;
     bool m_menuBarWeather;
     bool m_runAtStartup;
+    bool m_showVideo;
     TemperatureScales m_tempScale;
     QSettings settings;
     WeatherCommon::SearchCriteria m_searchCriteria;
     QString m_searchCity;
+    QString m_currentVideo;
+    QString m_currentVideoBasePath;
+    bool m_currentVideoChanged;
 };
 
 #endif // WEATHERCOMMON_H

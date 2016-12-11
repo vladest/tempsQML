@@ -68,7 +68,9 @@ public:
         WindGustRole,
         Rain3HRole,
         Snow3HRole,
-        TimestampStringRole
+        TimestampStringRole,
+        SunriseRole,
+        SunsetRole
     };
 
     explicit WeatherModel(WeatherCommon *wcommon, QAbstractListModel *parent = 0);
