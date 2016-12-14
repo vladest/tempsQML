@@ -10,4 +10,4 @@ Tested with Qt 5.7
 Weather map is using OpenWeatherMap QtLocation plugin which is written for this app
 It will be available later
 
-If some have better udea on UI/UX you are welcome :)
+If some have better idea on UI/UX you are welcome :)
