@@ -54,7 +54,7 @@ WeatherCommon::WeatherCommon(QObject *parent) : QObject(parent)
     _videoNamesTable.insert(QList<int>() << 200 << 201 << 210 << 230, "Sun-HeavyDarkClouds-Rain-Storm");
     _videoNamesTable.insert(QList<int>() << 800, "Sun");
     _videoNamesTable.insert(QList<int>() << 801, "Sun-SemiSmallCloudComing");
-    _videoNamesTable.insert(QList<int>() << 802, "Sun-SmallCloudsComing");
+    _videoNamesTable.insert(QList<int>() << 802, "Sun-SmallClouds-Coming");
     _videoNamesTable.insert(QList<int>() << 803, "Sun-SemiDarkCloud");
     _videoNamesTable.insert(QList<int>() << 804, "Sun-HavyDarkClouds");
     _videoNamesTable.insert(QList<int>() << 781 << 900 << 902 << 960 << 961 << 962, "Tornado-Twister");
@@ -92,7 +92,6 @@ WeatherCommon::WeatherCommon(QObject *parent) : QObject(parent)
         m_currentVideoBasePath = QString(qgetenv("TEMPSQML_VIDEO_BASE"));
     else
         m_currentVideoBasePath = QStringLiteral("http://www.vladest.org/weather/videos/");
-    qDebug() << "common created";
 }
 
 QString WeatherCommon::currentVideo() const

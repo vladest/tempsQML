@@ -63,11 +63,10 @@ Rectangle {
         visible: weatherCommon.showVideo
         property variant source: ShaderEffectSource {
             sourceItem: videoOutput;
-            textureMirroring: ShaderEffectSource.MirrorHorizontally
+            //textureMirroring: ShaderEffectSource.MirrorHorizontally
             smooth: false
             hideSource: true
         }
-        //enabled: false
 
         property color backgroundSourceColor: weatherCommon.backgroundColor
         anchors.fill: videoOutput
@@ -80,40 +79,48 @@ Rectangle {
             uniform vec4 backgroundSourceColor;
             varying vec2 qt_TexCoord0;
 
-            float th = 4.0; // threshold
-            float a2 = .8;
-            float spill = 1.0;
-
-            float getAlpha(vec4 c){
-                // First Vlahos assumption: Gf <= a2Bf
-                return 1.0 - th*(c.g-a2*(max(c.r,c.b)));
-            }
-
-            vec4 despill(vec4 c){
-                /// Second Vlahos assumption: max (Gf - Bf,0) <= max(Bf - Rf, 0)
-                float sub = max(c.g - mix(c.b, c.r, 0.45), 0.0);
-                c.g -= sub;
-                c.a -= smoothstep(0.25, 0.5, sub*c.a);
-
-                //restore luminance (kind of, I slightly reduced the green weight)
-                float luma = dot(c.rgb, vec3(0.350, 0.587,0.164));
-                c.r += sub*c.r*2.0*.350/luma;
-                c.g += sub*c.g*2.0*.587/luma;
-                c.b += sub*c.b*2.0*.164/luma;
-
-                return c;
+            float alphaCalc(float inpC, float keyC) {
+                if ( keyC < 0.00001f )
+                    return inpC;
+                else if ( inpC > keyC + 0.00001f )
+                    return (inpC - keyC) / (1.0f - keyC);
+                else if ( inpC < keyC - 0.00001f )
+                    return (keyC - inpC) / keyC;
+                else
+                    return 0.0f;
             }
 
             void main() {
-                vec2 uv = vec2(0,1) + vec2(1,-1) * qt_TexCoord0.xy;
-                vec4 fg = texture2D(source, uv);
-                vec4 ofg = fg;
+                vec4 in_v = texture2D(source, qt_TexCoord0.xy);
+                //vec4 color = vec4(0.21569, 0.54902, 0.0, 1.0);
+                vec4 color = texture2D(source, vec2(0., 0.));
 
-                fg.a = clamp(getAlpha(fg), 0.0, 1.0);
-                fg = despill(fg);
+                vec4 out_v = in_v;
+                vec4 alpha;
 
-                gl_FragColor.rgb = ofg.rgb;
-                gl_FragColor.rgb = backgroundSourceColor.rgb*(1.0-fg.a) + fg.rgb*fg.a;
+                alpha.w = in_v.w;
+
+                alpha.x = alphaCalc(in_v.x, color.x);
+                alpha.y = alphaCalc(in_v.y, color.y);
+                alpha.z = alphaCalc(in_v.z, color.z);
+
+                if (alpha.x > alpha.y) {
+                    if (alpha.x > alpha.z)
+                        out_v.w = alpha.x;
+                    else
+                        out_v.w = alpha.z;
+                } else if (alpha.y > alpha.z) {
+                    out_v.w = alpha.y;
+                } else {
+                    out_v.w = alpha.z;
+                }
+                if (out_v.w > .00001f) {
+                    out_v.xyz = mix(backgroundSourceColor.xyz, (out_v.xyz - color.xyz) / out_v.www + color.xyz, out_v.w);
+                    out_v.w *= alpha.w;
+                } else {
+                    out_v.xyz = backgroundSourceColor.xyz;
+                }
+                gl_FragColor = qt_Opacity*out_v;
             }"
     }
 
