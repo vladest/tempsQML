@@ -73,6 +73,12 @@ Rectangle {
         blending: false
         onLogChanged: console.log(log)
 
+        //change Alpha w/o changing color:
+        //PC0 - original color
+        //BC - background color
+        //PA0 - original Alpha
+        //PA1 - new Alpha
+        //PC1 = (PC0*PA0 + BC*(1-PA0) - BC*(1-PA1)) / PA1
         fragmentShader: "
             uniform sampler2D source;
             uniform lowp float qt_Opacity;
@@ -88,6 +94,12 @@ Rectangle {
                     return (keyC - inpC) / keyC;
                 else
                     return 0.0f;
+            }
+
+            vec3 saturation(vec3 rgb, float adjustment) {
+                const vec3 W = vec3(0.2125, 0.7154, 0.0721);
+                vec3 intensity = vec3(dot(rgb, W));
+                return mix(intensity, rgb, adjustment);
             }
 
             void main() {
@@ -116,6 +128,7 @@ Rectangle {
                 }
                 if (out_v.w > .00001f) {
                     out_v.xyz = mix(backgroundSourceColor.xyz, (out_v.xyz - color.xyz) / out_v.www + color.xyz, out_v.w);
+                    out_v.xyz = saturation(out_v.xyz, 0.3);
                     out_v.w *= alpha.w;
                 } else {
                     out_v.xyz = backgroundSourceColor.xyz;
