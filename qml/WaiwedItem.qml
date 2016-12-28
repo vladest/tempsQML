@@ -86,7 +86,7 @@ Rectangle {
             varying vec2 qt_TexCoord0;
 
             float alphaCalc(float inpC, float keyC) {
-                if ( keyC < 0.00001f )
+                if ( keyC < 0.1f )
                     return inpC;
                 else if ( inpC > keyC + 0.00001f )
                     return (inpC - keyC) / (1.0f - keyC);
@@ -105,7 +105,7 @@ Rectangle {
             void main() {
                 vec4 in_v = texture2D(source, qt_TexCoord0.xy);
                 //vec4 color = vec4(0.21569, 0.54902, 0.0, 1.0);
-                vec4 color = texture2D(source, vec2(0., 0.));
+                vec4 color = texture2D(source, vec2(0.01, 0.01));
 
                 vec4 out_v = in_v;
                 vec4 alpha;
@@ -128,7 +128,8 @@ Rectangle {
                 }
                 if (out_v.w > .00001f) {
                     out_v.xyz = mix(backgroundSourceColor.xyz, (out_v.xyz - color.xyz) / out_v.www + color.xyz, out_v.w);
-                    out_v.xyz = saturation(out_v.xyz, 0.3);
+                    if (out_v.w > .2f)
+                        out_v.xyz = saturation(out_v.xyz, 0.3);
                     out_v.w *= alpha.w;
                 } else {
                     out_v.xyz = backgroundSourceColor.xyz;
