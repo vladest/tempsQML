@@ -11,3 +11,5 @@ Weather map is using OpenWeatherMap QtLocation plugin which is written for this 
 It will be available later
 
 If some have better idea on UI/UX you are welcome :)
+
+Videos playable under Android, now available
