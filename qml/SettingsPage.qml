@@ -12,6 +12,13 @@ Item {
         }
     }
 
+    Connections {
+        target: weatherModel
+        onCurrentWeatherChanged: {
+            cityEdit.editableText = weatherModel.cityName + "," + weatherModel.countryID
+        }
+    }
+
     Column {
         width: parent.width - 20
         anchors.horizontalCenter: parent.horizontalCenter
