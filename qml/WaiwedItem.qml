@@ -47,6 +47,7 @@ Rectangle {
         //anchors.centerIn: parent
         y: appRoot.height / 5
         width: parent.width
+        smooth: false
         height: width / (840/640)
         source: mediaPlayer
         fillMode: VideoOutput.Stretch
@@ -70,6 +71,7 @@ Rectangle {
 
         property color backgroundSourceColor: weatherCommon.backgroundColor
         anchors.fill: videoOutput
+        smooth: false
         blending: false
         onLogChanged: console.log(log)
 
@@ -129,7 +131,7 @@ Rectangle {
                 if (out_v.w > .00001f) {
                     out_v.xyz = mix(backgroundSourceColor.xyz, (out_v.xyz - color.xyz) / out_v.www + color.xyz, out_v.w);
                     if (out_v.w > .2f)
-                        out_v.xyz = saturation(out_v.xyz, 0.3);
+                        out_v.xyz = saturation(out_v.xyz, 0.2);
                     out_v.w *= alpha.w;
                 } else {
                     out_v.xyz = backgroundSourceColor.xyz;

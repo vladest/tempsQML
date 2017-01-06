@@ -120,6 +120,7 @@ Item {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.leftMargin: 10*appscale
+        anchors.topMargin: -20*appscale
         height: 20*appscale
         width: 20*appscale
 
