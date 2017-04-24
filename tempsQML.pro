@@ -60,5 +60,9 @@ DISTFILES += \
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
-    ANDROID_EXTRA_LIBS =
+    ANDROID_EXTRA_LIBS = \
+        $$PWD/android/libcrypto.so \
+        $$PWD/android/libssl.so
+
+    LIBS += -L$$PWD/android -lcrypto -lssl
 }

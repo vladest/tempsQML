@@ -82,20 +82,21 @@ Rectangle {
         //PA1 - new Alpha
         //PC1 = (PC0*PA0 + BC*(1-PA0) - BC*(1-PA1)) / PA1
         fragmentShader: "
+            precision mediump float;
             uniform sampler2D source;
-            uniform lowp float qt_Opacity;
-            uniform vec4 backgroundSourceColor;
-            varying vec2 qt_TexCoord0;
+            uniform float qt_Opacity;
+            uniform lowp vec4 backgroundSourceColor;
+            varying lowp vec2 qt_TexCoord0;
 
             float alphaCalc(float inpC, float keyC) {
-                if ( keyC < 0.1f )
+                if ( keyC < 0.1 )
                     return inpC;
-                else if ( inpC > keyC + 0.00001f )
-                    return (inpC - keyC) / (1.0f - keyC);
-                else if ( inpC < keyC - 0.00001f )
+                else if ( inpC > keyC + 0.00001 )
+                    return (inpC - keyC) / (1.0 - keyC);
+                else if ( inpC < keyC - 0.00001 )
                     return (keyC - inpC) / keyC;
                 else
-                    return 0.0f;
+                    return 0.0;
             }
 
             vec3 saturation(vec3 rgb, float adjustment) {
@@ -128,10 +129,11 @@ Rectangle {
                 } else {
                     out_v.w = alpha.z;
                 }
-                if (out_v.w > .00001f) {
+                if (out_v.w > .00001) {
                     out_v.xyz = mix(backgroundSourceColor.xyz, (out_v.xyz - color.xyz) / out_v.www + color.xyz, out_v.w);
-                    if (out_v.w > .2f)
+                    if (out_v.w > .2)
                         out_v.xyz = saturation(out_v.xyz, 0.2);
+
                     out_v.w *= alpha.w;
                 } else {
                     out_v.xyz = backgroundSourceColor.xyz;
