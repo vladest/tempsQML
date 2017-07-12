@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.2
 
 Item {
     id: root
@@ -130,7 +130,7 @@ Item {
                 color: "#999999"
             }
         }
-        //flat: true
+        flat: true
         onCurrentIndexChanged: {
             textField.text = citiesModel.get(currentIndex).city
             weatherCommon.search(textField.text)
