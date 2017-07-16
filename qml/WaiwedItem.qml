@@ -1,7 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Particles 2.0
 import weathermodel 1.0
-import QtMultimedia 5.6
+import QtMultimedia 5.9
 
 Rectangle {
     id: root

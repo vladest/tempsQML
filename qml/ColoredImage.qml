@@ -1,4 +1,4 @@
-import QtQuick 2.5
+import QtQuick 2.7
 import QtGraphicalEffects 1.0
 
 //Draw an image where all pixels except transparent will be colored to a given color

@@ -1,4 +1,4 @@
-import QtQuick 2.6
+import QtQuick 2.7
 
 Column {
     property real itemHeight: 16

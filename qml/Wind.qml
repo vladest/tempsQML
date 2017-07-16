@@ -1,4 +1,4 @@
-import QtQuick 2.5
+import QtQuick 2.7
 
 Row {
     property real angle: 0

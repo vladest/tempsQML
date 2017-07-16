@@ -1,7 +1,7 @@
-import QtQuick 2.5
-import QtLocation 5.5
-import QtPositioning 5.5
-import QtQuick.Controls 2.0
+import QtQuick 2.7
+import QtLocation 5.9
+import QtPositioning 5.8
+import QtQuick.Controls 2.2
 
 Item {
     property var centerCoordinate: browserCoordinate.browserCoordinate
