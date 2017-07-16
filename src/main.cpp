@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
     QApplication::setWindowIcon(QIcon(":/tempsqml.png"));
 #endif /* Q_OS_LINUX */
 
+    QQmlApplicationEngine engine;
+    SystemTrayIcon *trayIcon = new SystemTrayIcon;
+
     QNetworkProxyFactory::setUseSystemConfiguration(true);
 
     qmlRegisterType<WeatherData>("weathermodel", 1, 0, "WeatherData");
@@ -44,9 +47,6 @@ int main(int argc, char *argv[])
     QObject::connect(&gbl, &GoogleBrowserLocation::browserCoordinateChanged, &wcmn, &WeatherCommon::setCoordinates);
     QObject::connect(&gbl, &GoogleBrowserLocation::tzoffsetChanged, &wcmn, &WeatherCommon::setTimezoneOffset);
 
-    QQmlApplicationEngine engine;
-    SystemTrayIcon *trayIcon = new SystemTrayIcon;
-
     Settings settings;
 
     engine.rootContext()->setContextProperty("weatherCommon", &wcmn);
@@ -59,5 +59,9 @@ int main(int argc, char *argv[])
 
     engine.load(QUrl(QLatin1String("qrc:/qml/main.qml")));
 
-    return app.exec();
+    int ret = app.exec();
+
+    delete trayIcon;
+
+    return ret;
 }

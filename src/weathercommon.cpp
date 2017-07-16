@@ -258,8 +258,7 @@ void WeatherCommon::setRunAtStartup(bool runAtStartup)
     settings.setValue("run_startup", runAtStartup);
 }
 
-void WeatherCommon::search(const QString &city)
-{
+void WeatherCommon::search(const QString &city) {
     if (!city.isEmpty()) {
         m_searchCity = city;
         m_searchCriteria = CityName;

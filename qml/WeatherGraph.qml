@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import QtCharts 2.0
+import QtCharts 2.2
 import QtQml.Models 2.2
 import weathermodel 1.0
 
@@ -54,6 +54,8 @@ Item {
         margins.left: 0
         margins.right: 0
         backgroundColor: "transparent"
+        backgroundRoundness: 0
+        dropShadowEnabled: false
         antialiasing: true
         clip: false
 

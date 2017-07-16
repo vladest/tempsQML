@@ -50,11 +50,7 @@ void WeatherModel::requestWeatherUpdate()
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     replyForecast = _nam.get(req);
     connect(replyForecast, &QNetworkReply::finished, this, &WeatherModel::onWeatherForecastRequestFinished);
-    QNetworkRequest req1 = QNetworkRequest(currentturl);
-    req1.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-
-    replyCurrent = _nam.get(req1);
-    connect(replyCurrent, &QNetworkReply::finished, this, &WeatherModel::onWeatherCurrentRequestFinished);
+    qDebug() << "requested current city" << m_wcommon->getSearchCity() << m_wcommon->getSearchCriteria();
 }
 
 QString WeatherModel::cityName() const
@@ -247,9 +243,12 @@ void WeatherModel::onWeatherCurrentRequestFinished()
         int cod = obj.value("cod").toInt();
         if (cod != 200) {
             emit m_wcommon->weatherDownloadError(WeatherCommon::Current, cod);
+            qWarning() << "current weather download error" << cod;
             replyCurrent = nullptr;
             return;
         }
+        QString _city;
+        QString _country;
 
         m_currentWeather->set_timestamp(QDateTime::fromTime_t(obj.value("dt").toInt(), Qt::UTC, m_wcommon->getTimezoneOffset()));
         //wData->set_timestamp(QDateTime::fromString(wData->timestamp_string(), "yyyy-MM-dd HH:mm:ss"));
@@ -283,6 +282,14 @@ void WeatherModel::onWeatherCurrentRequestFinished()
         if (!sysObj.isEmpty()) {
             m_currentWeather->set_sunrise(QDateTime::fromTime_t(sysObj.value("sunrise").toInt(), Qt::UTC, m_wcommon->getTimezoneOffset()));
             m_currentWeather->set_sunset(QDateTime::fromTime_t(sysObj.value("sunset").toInt(), Qt::UTC, m_wcommon->getTimezoneOffset()));
+            _country = sysObj.value("country").toString();
+        }
+        _city =  obj.value("name").toString();
+
+        //just in case its not yet set
+        if (!_city.isEmpty() && !_country.isEmpty()) {
+            setCityName(_city);
+            setCountryID(_country);
         }
         m_wcommon->setBackgroundColor(m_currentWeather->temp());
         emit currentWeatherChanged(m_currentWeather);
@@ -376,7 +383,23 @@ void WeatherModel::onWeatherForecastRequestFinished()
         endResetModel();
         setDaysNumber(m_forecastDates.uniqueKeys().size());
         //save last search
-        m_wcommon->saveLastRequestedWeather(m_cityName + "," + m_countryID);
+        m_wcommon->saveLastRequestedWeather(m_cityName + ", " + m_countryID);
+
+        //now create request for current weather
+        //make sure its done in chain since current weather response does not contains city name
+        QUrl currentturl;
+
+        if (m_wcommon->getSearchCriteria() == WeatherCommon::Coordinates) {
+            const QGeoCoordinate &coord = m_wcommon->getCoordinate();
+            currentturl = QUrl(QString("%1lat=%2&lon=%3%4").arg(weatherCurrentUrl).arg(coord.latitude()).arg(coord.longitude()).arg(appID));
+        } else {
+            currentturl = QUrl(QString("%1q=%2%3").arg(weatherCurrentUrl).arg(m_wcommon->getSearchCity()).arg(appID));
+        }
+        QNetworkRequest req1 = QNetworkRequest(currentturl);
+        req1.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
+        replyCurrent = _nam.get(req1);
+        connect(replyCurrent, &QNetworkReply::finished, this, &WeatherModel::onWeatherCurrentRequestFinished);
+
     } else {
         emit m_wcommon->weatherDownloadError(WeatherCommon::Forecast, reply->error());
         qDebug() << "Forecast request failure" <<reply->error();

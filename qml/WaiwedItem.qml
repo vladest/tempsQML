@@ -58,30 +58,29 @@ Rectangle {
                 mediaPlayer.play()
             }
         }
-    }
-    ShaderEffect {
-        id: videoBlendingShader
-        visible: weatherCommon.showVideo
-        property variant source: ShaderEffectSource {
-            sourceItem: videoOutput;
-            //textureMirroring: ShaderEffectSource.MirrorHorizontally
+        ShaderEffect {
+            id: videoBlendingShader
+            visible: weatherCommon.showVideo
+            property variant source: ShaderEffectSource {
+                sourceItem: parent;
+                //textureMirroring: ShaderEffectSource.MirrorHorizontally
+                smooth: false
+                hideSource: true
+            }
+
+            property color backgroundSourceColor: weatherCommon.backgroundColor
+            anchors.fill: parent
             smooth: false
-            hideSource: true
-        }
+            blending: false
+            onLogChanged: console.log(log)
 
-        property color backgroundSourceColor: weatherCommon.backgroundColor
-        anchors.fill: videoOutput
-        smooth: false
-        blending: false
-        onLogChanged: console.log(log)
-
-        //change Alpha w/o changing color:
-        //PC0 - original color
-        //BC - background color
-        //PA0 - original Alpha
-        //PA1 - new Alpha
-        //PC1 = (PC0*PA0 + BC*(1-PA0) - BC*(1-PA1)) / PA1
-        fragmentShader: "
+            //change Alpha w/o changing color:
+            //PC0 - original color
+            //BC - background color
+            //PA0 - original Alpha
+            //PA1 - new Alpha
+            //PC1 = (PC0*PA0 + BC*(1-PA0) - BC*(1-PA1)) / PA1
+            fragmentShader: "
             precision mediump float;
             uniform sampler2D source;
             uniform float qt_Opacity;
@@ -140,6 +139,7 @@ Rectangle {
                 }
                 gl_FragColor = qt_Opacity*out_v;
             }"
+        }
     }
 
     //flash effect

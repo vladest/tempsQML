@@ -39,6 +39,7 @@ void WeatherDailyModel::requestWeatherUpdate()
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     QNetworkReply *replyDaily = _nam.get(QNetworkRequest(req));
     connect(replyDaily, &QNetworkReply::finished, this, &WeatherDailyModel::onWeatherDailyRequestFinished);
+    qDebug() << "requested daily city" << m_wcommon->getSearchCity();
 }
 
 QString WeatherDailyModel::cityName() const

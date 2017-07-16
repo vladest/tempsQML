@@ -1,5 +1,5 @@
-import QtQuick 2.5
-import QtQuick.Controls 2.0
+import QtQuick 2.7
+import QtQuick.Controls 2.2
 import weathermodel 1.0
 
 Item {
@@ -9,13 +9,6 @@ Item {
             cityEdit.loadCities()
         } else if (StackView.status === StackView.Deactivating) {
             cityEdit.saveCities()
-        }
-    }
-
-    Connections {
-        target: weatherModel
-        onCurrentWeatherChanged: {
-            cityEdit.editableText = weatherModel.cityName + "," + weatherModel.countryID
         }
     }
 
@@ -56,12 +49,12 @@ Item {
             color: "#999999"
             font.pixelSize: appRoot.height / 35
         }
+
         EditableCombo {
             id: cityEdit
             width: parent.width
-            editableText: weatherModel.cityName + ", " + weatherModel.countryID
             onEnterPressed: {
-                weatherCommon.search(editableText)
+                weatherCommon.search(editText)
             }
         }
 

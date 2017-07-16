@@ -1,6 +1,6 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
 import "."
 
 ApplicationWindow {
@@ -50,20 +50,20 @@ ApplicationWindow {
             }
         }
     }
+
     Component {
         id: settingsComponent
-        SettingsPage {
-        }
+        SettingsPage {}
     }
+
     Component {
         id: mainComponent
-        MainPage {
-        }
+        MainPage {}
     }
+
     Component {
         id: mapComponent
-        WeatherMap {
-        }
+        WeatherMap {}
     }
 
     Component.onCompleted: {
