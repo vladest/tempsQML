@@ -18,20 +18,24 @@ Item {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 20
         spacing: 10
+
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 5
+
             Image {
                 source: "images/app.png"
                 width: appRoot.height / 10
                 height: width
             }
+
             Text {
                 text: "tempsQML"
                 font.pixelSize: appRoot.height / 15
                 font.bold: true
                 anchors.verticalCenter: parent.verticalCenter
             }
+
             Image {
                 id: smallSun
                 width: appRoot.height / 24
@@ -60,12 +64,14 @@ Item {
 
         Row {
             width: parent.width
+
             Text {
                 font.pixelSize: appRoot.height/32
                 anchors.verticalCenter: parent.verticalCenter
                 text: qsTr("Temperature scale")
                 color: "#999999"
             }
+
             Item {
                 width: 20*appscale; height: 1
             }
@@ -79,9 +85,11 @@ Item {
                 checked: weatherCommon.tempScale === WeatherCommon.Celsium
                 ButtonGroup.group: scaleGroup
             }
+
             Item {
                 width: 5*appscale; height: 1
             }
+
             SettingsRadio {
                 id: fahr
                 font.pixelSize: appRoot.height/26
@@ -90,6 +98,7 @@ Item {
                 ButtonGroup.group: scaleGroup
             }
         }
+
         SettingsCheck {
             id: systray
             width: parent.width
@@ -97,6 +106,7 @@ Item {
             text: qsTr("Show weather in menubar")
             checked: weatherCommon.menuBarWeather
         }
+
         SettingsCheck {
             id: startup
             width: parent.width
@@ -104,6 +114,7 @@ Item {
             text: qsTr("Start at login")
             checked: weatherCommon.runAtStartup
         }
+
         SettingsCheck {
             id: anim
             width: parent.width
@@ -111,6 +122,7 @@ Item {
             text: qsTr("Show weather animation")
             checked: weatherCommon.showAnimation
         }
+
         SettingsCheck {
             id: showVideo
             width: parent.width
@@ -118,6 +130,7 @@ Item {
             text: qsTr("Show weather video")
             checked: weatherCommon.showVideo
         }
+
         Row {
             width: parent.width
             spacing: 10
@@ -130,7 +143,7 @@ Item {
                     weatherCommon.showAnimation = anim.checked
                     weatherCommon.showVideo = showVideo.checked
                     weatherCommon.tempScale = fahr.checked ? WeatherCommon.Fahrenheit : WeatherCommon.Celsium
-                    waiwedItem.menuButton.state = "menu"
+                    menuButton.state = "menu"
                     weatherCommon.requestWeatherUpdate()
                 }
             }

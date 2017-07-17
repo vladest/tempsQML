@@ -10,6 +10,14 @@ Item {
 
     onVisibleChanged: if (!visible) weatherLegend.visible = false
 
+    Connections {
+        target: weatherModel
+        onCurrentWeatherChanged: {
+            visualModel.model = null
+            visualModel.model = weatherModel
+        }
+    }
+
     Text {
         id: currentGraphDate
         anchors.top: parent.top
@@ -24,7 +32,7 @@ Item {
     //delegate model used as a proxy to extract filtered data
     DelegateModel {
         id: visualModel
-        model: weatherModel//filteredWeatherModel
+        model: weatherModel
         delegate: Item {}
         onCountChanged: {
             //console.log("filtered count", count)

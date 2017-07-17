@@ -18,7 +18,7 @@ Button {
 
     background: Rectangle {
         opacity: enabled ? 1 : 0.3
-        color: hovered ? "#80BBB2" : "#FFFFFF"
+        color: hovered || control.pressed ? "#80BBB2" : "#FFFFFF"
         border.width: 1
         border.color: "#CCCCCC"
     }
