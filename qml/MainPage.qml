@@ -97,16 +97,34 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
             }
         }
-        Item {
+        Flipable {
             id: subdetails
             anchors.bottom: parent.bottom
             width: parent.width
             anchors.top: row.bottom
             property int showdetailsindex: -1
-            ListView {
+
+            transform: Rotation {
+                id: rotation
+                origin.x: subdetails.width/2
+                origin.y: subdetails.height/2
+                axis.x: 0; axis.y: 1; axis.z: 0     // set axis.y to 1 to rotate around y-axis
+                angle: 0    // the default angle
+            }
+
+            states: State {
+                name: "back"
+                PropertyChanges { target: rotation; angle: 180 }
+                when: subdetails.showdetailsindex >= 0
+            }
+
+            transitions: Transition {
+                NumberAnimation { target: rotation; property: "angle"; duration: 1000 }
+            }
+
+            front: ListView {
                 id: view
                 model: weatherDailyModel
-                visible: subdetails.showdetailsindex === -1
                 anchors.fill: parent
                 anchors.margins: 10
                 clip: false
@@ -127,9 +145,8 @@ Item {
                     }
                 }
             }
-            WeatherGraph {
+            back: WeatherGraph {
                 anchors.fill: parent
-                visible: subdetails.showdetailsindex !== -1
             }
         }
     }
