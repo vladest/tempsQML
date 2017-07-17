@@ -6,8 +6,20 @@ import weathermodel 1.0
 Item {
     id: weatherChart
     property int graphPoints: 0
+    property int dayIndex: 0
 
     onVisibleChanged: if (!visible) weatherLegend.visible = false
+
+    Text {
+        id: currentGraphDate
+        anchors.top: parent.top
+        anchors.topMargin: 2*appscale
+        anchors.horizontalCenter: parent.horizontalCenter
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+        color: "#999999"
+        font.pixelSize: 16*appscale
+    }
 
     //delegate model used as a proxy to extract filtered data
     DelegateModel {
@@ -15,7 +27,7 @@ Item {
         model: weatherModel//filteredWeatherModel
         delegate: Item {}
         onCountChanged: {
-            console.log("filtered count", count)
+            //console.log("filtered count", count)
             if (count > 0) {
                 tempsSeries.removePoints(0, graphPoints)
                 valueAxisX.max = Math.max(count - 1, 1)
@@ -51,6 +63,13 @@ Item {
         anchors.fill: parent
         contentHeight: chartView.height
         contentWidth: chartView.width
+        contentX: weatherChart.width*dayIndex
+        onContentXChanged: {
+            var index = parseInt((contentX/weatherChart.width)*weatherModel.daysNumber) + 1
+            var time = Qt.formatDateTime(visualModel.model.data(visualModel.modelIndex(index), 257), "ddd dd/MM")
+            currentGraphDate.text = time
+        }
+
         ChartView {
             id: chartView
             width: weatherChart.width*weatherModel.daysNumber
@@ -109,7 +128,7 @@ Item {
                 }
 
                 onPressed: {
-                    console.log("point pressed", point)
+                    //console.log("point pressed", point)
                     weatherLegend.visible = true
                     updateWeather(point)
                 }
@@ -161,7 +180,6 @@ Item {
                 font.pixelSize: 12*appscale
             }
         }
-
     }
 }
 

@@ -147,6 +147,7 @@ Item {
             }
             back: WeatherGraph {
                 anchors.fill: parent
+                dayIndex: subdetails.showdetailsindex
             }
         }
     }
