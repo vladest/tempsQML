@@ -7,13 +7,15 @@ Item {
     id: weatherChart
     property int graphPoints: 0
 
+    onVisibleChanged: if (!visible) weatherLegend.visible = false
+
     //delegate model used as a proxy to extract filtered data
     DelegateModel {
         id: visualModel
-        model: filteredWeatherModel
+        model: weatherModel//filteredWeatherModel
         delegate: Item {}
         onCountChanged: {
-            //console.log("filtered count", count)
+            console.log("filtered count", count)
             if (count > 0) {
                 tempsSeries.removePoints(0, graphPoints)
                 valueAxisX.max = Math.max(count - 1, 1)
@@ -44,93 +46,82 @@ Item {
         }
     }
 
-    ChartView {
-        id: chartView
-
+    Flickable {
+        id: flickable
         anchors.fill: parent
-        legend.visible: false
-        margins.bottom: 0
-        margins.top: 0
-        margins.left: 0
-        margins.right: 0
-        backgroundColor: "transparent"
-        backgroundRoundness: 0
-        dropShadowEnabled: false
-        antialiasing: true
-        clip: false
+        contentHeight: chartView.height
+        contentWidth: chartView.width
+        ChartView {
+            id: chartView
+            width: weatherChart.width*weatherModel.daysNumber
+            height: weatherChart.height
+            legend.visible: false
+            margins.bottom: 0
+            margins.top: 0
+            margins.left: 0
+            margins.right: 0
+            backgroundColor: "transparent"
+            backgroundRoundness: 0
+            dropShadowEnabled: false
+            antialiasing: true
+            clip: false
 
-        ValueAxis {
-            visible: false
-            id: valueAxisX
-            min: 0
-            max: 1
-        }
-
-        ValueAxis{
-            visible: false
-            id: valueAxisY
-            min: 0
-            max: 5
-        }
-
-        SplineSeries {
-            id: tempsSeries
-            width: 4*appscale
-            style: Qt.SolidLine
-            capStyle: Qt.RoundCap
-            pointLabelsClipping: false
-            pointLabelsVisible: true
-            pointLabelsColor: "#999999"
-            pointLabelsFont.pixelSize: 12*appscale
-            pointLabelsFormat: weatherCommon.tempScale === WeatherCommon.Celsium ? "@yPoint \u00B0C" : "@yPoint \u00B0F"
-            axisX: valueAxisX
-            axisY: valueAxisY
-            color: weatherCommon.backgroundColor
-            pointsVisible: true
-            //useOpenGL: true
-
-            function updateWeather(point) {
-                var _index = Math.round(point.x)
-                //index safety
-                if (_index >= visualModel.model.count && visualModel.model.count > 0)
-                    _index = visualModel.model.count - 1
-                weatherLegend.x = chartView.width/graphPoints * point.x - weatherLegend.width / 2
-                weatherLegend._temp = weatherCommon.roundup(point.y)
-                weatherLegend._time = Qt.formatDateTime(visualModel.model.data(visualModel.modelIndex(_index), 257), "ddd hh:mm")
-                weatherLegend._iconid = visualModel.model.data(visualModel.modelIndex(_index), 268)
+            ValueAxis {
+                visible: false
+                id: valueAxisX
+                min: 0
+                max: 1
             }
 
-            onPressed: {
-                weatherLegend.visible = true
-                updateWeather(point)
+            ValueAxis{
+                visible: false
+                id: valueAxisY
+                min: 0
+                max: 5
             }
 
-            //only for systems with mouse
-            onHovered: {
-                weatherLegend.visible = state
+            SplineSeries {
+                id: tempsSeries
+                width: 4*appscale
+                style: Qt.SolidLine
+                capStyle: Qt.RoundCap
+                pointLabelsClipping: false
+                pointLabelsVisible: true
+                pointLabelsColor: "#999999"
+                pointLabelsFont.pixelSize: 12*appscale
+                pointLabelsFormat: weatherCommon.tempScale === WeatherCommon.Celsium ? "@yPoint \u00B0C" : "@yPoint \u00B0F"
+                axisX: valueAxisX
+                axisY: valueAxisY
+                color: weatherCommon.backgroundColor
+                pointsVisible: true
+                //useOpenGL: true
 
-                if (state) {
+                function updateWeather(point) {
+                    var _index = Math.round(point.x)
+                    //index safety
+                    if (_index >= visualModel.model.count && visualModel.model.count > 0)
+                        _index = visualModel.model.count - 1
+                    weatherLegend.x = chartView.width/graphPoints * point.x - flickable.contentX
+                            - weatherLegend.width / 2
+                    weatherLegend._temp = weatherCommon.roundup(point.y)
+                    weatherLegend._time = Qt.formatDateTime(visualModel.model.data(visualModel.modelIndex(_index), 257), "ddd hh:mm")
+                    weatherLegend._iconid = visualModel.model.data(visualModel.modelIndex(_index), 268)
+                }
+
+                onPressed: {
+                    console.log("point pressed", point)
+                    weatherLegend.visible = true
                     updateWeather(point)
                 }
-            }
-        }
-    }
 
-    MenuClose {
-        state: "back"
-        color: weatherCommon.backgroundColor
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.leftMargin: 10*appscale
-        anchors.topMargin: -20*appscale
-        height: 20*appscale
-        width: 20*appscale
+                //only for systems with mouse
+                onHovered: {
+                    weatherLegend.visible = state
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                weatherLegend.visible = false
-                subdetails.showdetailsindex = -1
+                    if (state) {
+                        updateWeather(point)
+                    }
+                }
             }
         }
     }

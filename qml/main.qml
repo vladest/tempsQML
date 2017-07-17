@@ -18,6 +18,28 @@ ApplicationWindow {
     property Item itemSettings: null
     property Item itemMain: null
 
+    signal settingsClicked
+
+    MenuClose {
+        id: menuButton
+        height: appRoot.height/24
+        width: height
+        z: 1000
+        onStateChanged: {
+            settingsClicked()
+        }
+
+        anchors { left: parent.left; top: parent.top;
+            leftMargin: appRoot.width/28;
+            topMargin: appRoot.height/28;
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: menuButton.state = (menuButton.state == "menu" ? "back" : "menu")
+        }
+    }
+
     StackView {
         id: mainView
         padding: 0
@@ -39,9 +61,9 @@ ApplicationWindow {
         background: WaiwedItem {
             id: waiwedItem
             Connections {
-                target: waiwedItem.menuButton
+                target: menuButton
                 onStateChanged: {
-                    if (waiwedItem.menuButton.state === "menu") {
+                    if (menuButton.state === "menu") {
                         mainView.pop()
                     } else {
                         itemSettings = mainView.push(settingsComponent)

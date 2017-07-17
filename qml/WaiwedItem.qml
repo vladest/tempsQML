@@ -5,10 +5,8 @@ import QtMultimedia 5.9
 
 Rectangle {
     id: root
-    property real yPage: menu.state === "menu" ? appRoot.height / 1.6 : appRoot.height / 4.8
+    property real yPage: menuButton.state === "menu" ? appRoot.height / 1.6 : appRoot.height / 4.8
     color: weatherCommon.backgroundColor
-    signal settingsClicked
-    property alias menuButton: menu
     state: "none"
 
     //onColorChanged: console.log("color", color)
@@ -269,21 +267,6 @@ Rectangle {
             onTriggered: {
                 clock.text = Qt.formatDateTime(new Date(), "hh:mm")
             }
-        }
-    }
-    MenuClose {
-        id: menu
-        height: appRoot.height/24
-        width: height
-        z: 1000
-        onStateChanged: {
-            settingsClicked()
-        }
-
-        anchors { left: parent.left; top: parent.top; leftMargin: appRoot.width/28; topMargin: appRoot.height/28; }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: menu.state = (menu.state == "menu" ? "back" : "menu")
         }
     }
 

@@ -4,6 +4,11 @@ import QtQuick.Controls 2.2
 Item {
     id: root
 
+    MouseArea {
+        anchors.fill: parent
+        onClicked: subdetails.showdetailsindex = -1
+    }
+
     Button {
         height: appRoot.height/24
         width: height
